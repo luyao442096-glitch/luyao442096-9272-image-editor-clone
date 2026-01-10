@@ -1,0 +1,193 @@
+export type Locale = "en" | "zh"
+
+export const translations = {
+  en: {
+    // Header
+    newBanner: "Nano Banana Pro is now live",
+    tryNow: "Try it now",
+    editor: "Editor",
+    features: "Features",
+    showcase: "Showcase",
+    faq: "FAQ",
+    login: "Log in",
+    tryFree: "Try Free",
+    generator: "Generator",
+
+    // Hero
+    heroTitle: "AI Natural Language Image Editor",
+    heroSubtitle:
+      "Transform any image with simple text prompts. Advanced AI-powered editing with character consistency.",
+    getStarted: "Get Started",
+    viewShowcase: "View Showcase",
+
+    // Generator
+    imageEdit: "Image Edit",
+    textToImage: "Text to Image",
+    transformExisting: "Transform existing images into new creations",
+    generateNew: "Generate new images from text descriptions",
+    promptInput: "Prompt Input",
+    aiModelSelection: "AI Model Selection",
+    differentModels: "Different models offer unique characteristics and styles",
+    resolutionSettings: "Resolution Settings",
+    aspectRatio: "Aspect Ratio",
+    generationCount: "Generation Count",
+    images: "images",
+    resolution2k4k: "2K and 4K resolution requires VIP membership",
+    referenceImage: "Reference Image",
+    selectFromLibrary: "Select from Library",
+    addImage: "Add Image",
+    maxSize: "Max 10MB",
+    notifyWhenDone: "Notify me when done",
+    generateNow: "Generate Now",
+    credits: "credits",
+    outputGallery: "Output Gallery",
+    readyForGeneration: "Ready for instant generation",
+    enterPrompt: "Enter your prompt and unleash the power",
+    generationTips: "Generation Tips",
+    tipsContent: "Use detailed descriptions for more accurate results",
+    generating: "Generating...",
+    download: "Download",
+    downloadAll: "Download All",
+    downloaded: "Downloaded!",
+    tips: "Pro Tips",
+
+    // Login
+    welcomeBack: "Welcome Back",
+    loginSubtitle: "Sign in to your account to continue",
+    email: "Email",
+    password: "Password",
+    rememberMe: "Remember me",
+    forgotPassword: "Forgot password?",
+    signIn: "Sign In",
+    noAccount: "Don't have an account?",
+    signUp: "Sign up",
+    orContinueWith: "Or continue with",
+
+    // Features
+    featuresTitle: "Powerful Features",
+    featuresSubtitle: "Everything you need to create stunning AI-generated images",
+
+    // Showcase
+    showcaseTitle: "Showcase Gallery",
+    showcaseSubtitle: "See what our users have created with Nano Banana",
+
+    // Testimonials
+    testimonialsTitle: "What Users Say",
+    testimonialsSubtitle: "Trusted by thousands of creators worldwide",
+
+    // FAQ
+    faqTitle: "Frequently Asked Questions",
+    faqSubtitle: "Everything you need to know about Nano Banana",
+
+    // Footer
+    footerDescription: "Transform any image with simple text prompts. The most advanced AI image editor.",
+    product: "Product",
+    company: "Company",
+    pricing: "Pricing",
+    api: "API",
+    about: "About",
+    blog: "Blog",
+    careers: "Careers",
+    contact: "Contact",
+    privacy: "Privacy",
+    terms: "Terms",
+    cookies: "Cookies",
+    allRights: "All rights reserved.",
+  },
+  zh: {
+    // Header
+    newBanner: "Nano Banana Pro 现已上线",
+    tryNow: "立即体验",
+    editor: "编辑器",
+    features: "功能",
+    showcase: "案例展示",
+    faq: "常见问题",
+    login: "登录",
+    tryFree: "免费试用",
+    generator: "生成器",
+
+    // Hero
+    heroTitle: "AI自然语言图片编辑器",
+    heroSubtitle: "使用简单的文字提示转换任何图像。先进的AI驱动编辑，保持角色一致性。",
+    getStarted: "开始使用",
+    viewShowcase: "查看案例",
+
+    // Generator
+    imageEdit: "图像编辑",
+    textToImage: "文生图",
+    transformExisting: "将现有图像转换为新作品",
+    generateNew: "从文字描述生成新图像",
+    promptInput: "提示词输入",
+    aiModelSelection: "AI模型选择",
+    differentModels: "不同模型具有不同特性和风格",
+    resolutionSettings: "分辨率设置",
+    aspectRatio: "宽高比",
+    generationCount: "生成数量",
+    images: "张图片",
+    resolution2k4k: "2K和4K分辨率需要VIP会员权限",
+    referenceImage: "参考图像",
+    selectFromLibrary: "从资源库选择",
+    addImage: "添加图片",
+    maxSize: "最大10MB",
+    notifyWhenDone: "完成后通知我",
+    generateNow: "立即生成",
+    credits: "积分",
+    outputGallery: "输出画廊",
+    readyForGeneration: "准备即时生成",
+    enterPrompt: "输入提示词，释放强大力量",
+    generationTips: "生成提示",
+    tipsContent: "使用详细的描述可以获得更精确的结果",
+    generating: "生成中...",
+    download: "下载",
+    downloadAll: "全部下载",
+    downloaded: "已下载！",
+    tips: "专业提示",
+
+    // Login
+    welcomeBack: "欢迎回来",
+    loginSubtitle: "登录您的账户以继续",
+    email: "邮箱",
+    password: "密码",
+    rememberMe: "记住我",
+    forgotPassword: "忘记密码？",
+    signIn: "登录",
+    noAccount: "还没有账户？",
+    signUp: "注册",
+    orContinueWith: "或通过以下方式继续",
+
+    // Features
+    featuresTitle: "强大功能",
+    featuresSubtitle: "创建令人惊叹的AI生成图像所需的一切",
+
+    // Showcase
+    showcaseTitle: "案例画廊",
+    showcaseSubtitle: "查看用户使用Nano Banana创作的作品",
+
+    // Testimonials
+    testimonialsTitle: "用户评价",
+    testimonialsSubtitle: "受到全球数千名创作者的信赖",
+
+    // FAQ
+    faqTitle: "常见问题",
+    faqSubtitle: "关于Nano Banana您需要了解的一切",
+
+    // Footer
+    footerDescription: "使用简单的文字提示转换任何图像。最先进的AI图像编辑器。",
+    product: "产品",
+    company: "公司",
+    pricing: "定价",
+    api: "API",
+    about: "关于",
+    blog: "博客",
+    careers: "招聘",
+    contact: "联系",
+    privacy: "隐私",
+    terms: "条款",
+    cookies: "Cookies",
+    allRights: "保留所有权利。",
+  },
+}
+
+export function getTranslation(locale: Locale) {
+  return translations[locale]
+}

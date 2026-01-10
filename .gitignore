@@ -1,0 +1,13 @@
+# 依赖文件夹
+node_modules/
+
+# 打包产物
+.next/
+dist/
+
+# 环境变量文件
+.env
+.env.local
+
+# 编辑器缓存
+.vscode/
