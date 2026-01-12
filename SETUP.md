@@ -16,6 +16,11 @@ OPENROUTER_API_KEY=your_openrouter_api_key_here
 # Site Configuration (Optional - for OpenRouter rankings)
 SITE_URL=http://localhost:3000
 SITE_NAME=Nano Banana
+
+# Supabase Configuration (Required for authentication)
+# Get these from your Supabase project settings: https://app.supabase.com/project/_/settings/api
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 ## Getting API Keys
@@ -28,6 +33,38 @@ SITE_NAME=Nano Banana
 5. Copy the key and add it to your `.env.local` file
 
 **Note:** OpenRouter API key is required for both image generation and analysis features.
+
+### Supabase Configuration (Required for authentication)
+1. Visit [Supabase](https://supabase.com/)
+2. Sign up or log in
+3. Create a new project or select an existing one
+4. Go to **Settings** > **API**
+5. Copy the **Project URL** and **anon/public key**
+6. Add them to your `.env.local` file as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+### Google OAuth Setup (Required for Google login)
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the **Google+ API**:
+   - Go to **APIs & Services** > **Library**
+   - Search for "Google+ API" and enable it
+4. Configure the **OAuth consent screen**:
+   - Go to **APIs & Services** > **OAuth consent screen**
+   - Choose "External" user type
+   - Fill in the required information (app name, user support email, etc.)
+5. Create **OAuth 2.0 credentials**:
+   - Go to **APIs & Services** > **Credentials**
+   - Click **Create Credentials** > **OAuth client ID**
+   - Choose **Web application**
+   - Add authorized redirect URI: `https://<your-project-ref>.supabase.co/auth/v1/callback`
+     - Replace `<your-project-ref>` with your Supabase project reference (found in your Supabase project URL)
+   - Copy the **Client ID** and **Client Secret**
+6. Configure Google provider in Supabase:
+   - Go to your Supabase project
+   - Navigate to **Authentication** > **Providers**
+   - Find **Google** and enable it
+   - Enter the **Client ID** and **Client Secret** from Google Cloud Console
+   - Save the configuration
 
 ## Usage
 
