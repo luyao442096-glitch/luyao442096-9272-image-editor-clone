@@ -1,42 +1,29 @@
-// app/auth/callback/page.tsx
+// app/login/page.tsx
 'use client';
 import { Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { createBrowserClient } from '@supabase/ssr';
+import { useSearchParams, useRouter } from 'next/navigation';
+import GoogleLoginButton from '@/components/google-login-button';
 
-// 子组件：处理登录回调逻辑
-const CallbackContent = () => {
-  const router = useRouter();
+// 子组件：处理登录页逻辑
+const LoginContent = () => {
   const searchParams = useSearchParams();
-  const code = searchParams.get('code');
+  const router = useRouter();
+  const error = searchParams.get('error');
 
-  // 初始化 Supabase 客户端
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  return (
+    <div className="login-page">
+      <h1>登录</h1>
+      {error && <p className="error">登录失败，请重试</p>}
+      <GoogleLoginButton />
+    </div>
   );
-
-  // 处理授权码并完成登录
-  if (code) {
-    supabase.auth.exchangeCodeForSession(code)
-      .then(() => {
-        // 登录成功后跳转到首页
-        router.push('/');
-      })
-      .catch(() => {
-        // 登录失败跳转到登录页
-        router.push('/login');
-      });
-  }
-
-  return <div>登录验证中，请稍候...</div>;
 };
 
 // 父组件：用 Suspense 包裹子组件
-export default function CallbackPage() {
+export default function LoginPage() {
   return (
     <Suspense fallback={<div>加载中...</div>}>
-      <CallbackContent />
+      <LoginContent />
     </Suspense>
   );
 }
