@@ -5,12 +5,10 @@ import { cookies } from 'next/headers'
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  // 获取登录后要跳转的地址，如果没有就跳回首页
   const next = searchParams.get('next') ?? '/'
 
   if (code) {
-    const cookieStore = await cookies() // 👈 Next.js 15 必须加 await
-    
+    const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -25,23 +23,23 @@ export async function GET(request: Request) {
                 cookieStore.set(name, value, options)
               )
             } catch {
-              // 在 Server Action 或 Route Handler 中设置 cookie 是安全的
-              // 这里的 try/catch 是为了忽略某些边缘情况的报错
+              // 忽略
             }
           },
         },
       }
     )
     
-    // 用验证码交换 Session
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error) {
-      // 登录成功！把用户重定向到他原本想去的地方
       return NextResponse.redirect(`${origin}${next}`)
+    } else {
+      // 🚨 关键修改：把具体的错误信息打印出来，并传给错误页
+      console.error('登录回调出错:', error)
+      return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${encodeURIComponent(error.message)}`)
     }
   }
 
-  // 如果出错，跳回错误页
-  return NextResponse.redirect(`${origin}/auth/auth-code-error`)
+  return NextResponse.redirect(`${origin}/auth/auth-code-error?error=no_code_provided`)
 }
