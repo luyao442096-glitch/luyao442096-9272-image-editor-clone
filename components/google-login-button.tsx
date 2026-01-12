@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { createBrowserClient } from '@supabase/ssr' // 👈 关键改动：改用新版库
+// 👇 关键改变：这里必须用 createBrowserClient (来自 @supabase/ssr)
+import { createBrowserClient } from '@supabase/ssr' 
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 
@@ -24,7 +25,7 @@ export default function GoogleLoginButton({
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
 
-  // 创建新版 Supabase 客户端
+  // 👇 创建新版客户端，和你的后端 route.ts 保持“语言互通”
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -39,6 +40,7 @@ export default function GoogleLoginButton({
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
+          // 拼接回调地址
           redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
           queryParams: {
             access_type: 'offline',
@@ -73,7 +75,6 @@ export default function GoogleLoginButton({
         </>
       ) : (
         <>
-          {/* 这里保留了你的 SVG 图标 */}
           <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
             <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
             <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
