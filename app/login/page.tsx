@@ -1,32 +1,37 @@
-'use client'; // 👈 必须放在第一行！
+'use client';
 
 import { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-// 确保下面这个组件的路径是正确的，如果不正确请修改
+import { useSearchParams } from 'next/navigation';
+// 确保这个路径与您实际的项目结构一致，如果报错找不到组件，请检查这里
 import GoogleLoginButton from '@/components/google-login-button'; 
 
-// 1. 拆分出一个内部组件来处理搜索参数逻辑
+// 1. 创建一个内部组件专门处理搜索参数（useSearchParams）
 function LoginContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const error = searchParams.get('error');
 
   return (
-    <div className="login-page">
-      <h1>登录</h1>
-      {/* 如果有错误参数，显示提示 */}
-      {error && <p className="error" style={{color: 'red'}}>登录失败，请重试</p>}
+    <div className="login-container flex flex-col items-center justify-center min-h-screen p-4">
+      <h1 className="text-2xl font-bold mb-6">登录</h1>
+      
+      {/* 如果 URL 中包含 error 参数，显示错误提示 */}
+      {error && (
+        <div className="bg-red-100 text-red-600 px-4 py-2 rounded mb-4">
+          登录失败，请重试
+        </div>
+      )}
+
+      {/* 谷歌登录按钮 */}
       <GoogleLoginButton />
     </div>
   );
 }
 
-// 2. 主页面导出
+// 2. 默认导出页面组件，必须用 Suspense 包裹
 export default function LoginPage() {
   return (
-    // 👈 关键：用 Suspense 包裹住使用了 useSearchParams 的组件
-    // 这样 Next.js 在构建时就不会报错了
-    <Suspense fallback={<div>加载中...</div>}>
+    // Suspense 是解决 "useSearchParams" 构建错误的关键
+    <Suspense fallback={<div className="p-4 text-center">正在加载登录界面...</div>}>
       <LoginContent />
     </Suspense>
   );
