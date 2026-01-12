@@ -1,10 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 新增/修改env配置，关闭调试模式
-  env: {
-    DEBUG_MODE: "false"
+  // ...你的原有配置
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: 'https://zlseren.online' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET, POST, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
+        ],
+      },
+    ];
   },
-  // 保留文件中原有的其他配置（如reactStrictMode、images等）
 };
 
 export default nextConfig;
