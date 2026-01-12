@@ -1,10 +1,13 @@
-// app/login/page.tsx
+// 第一步：先添加这行代码（最顶部）
+export const dynamic = 'force-dynamic';
+
+// 原来的代码（use client 等）放在下面
 'use client';
 import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import GoogleLoginButton from '@/components/google-login-button';
 
-// 子组件：处理登录页逻辑
+// 剩下的组件代码保持不变...
 const LoginContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -19,7 +22,6 @@ const LoginContent = () => {
   );
 };
 
-// 父组件：用 Suspense 包裹子组件
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>加载中...</div>}>
