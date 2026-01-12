@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs' // 👈 引入 Supabase 客户端
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
 
@@ -22,15 +23,41 @@ export default function GoogleLoginButton({
 }: GoogleLoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
+  // 创建 Supabase 客户端实例
+  const supabase = createClientComponentClient()
 
-  // 正确的按钮逻辑（前端仅跳转服务端接口）
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setIsLoading(true)
-    // 构建请求 URL，包含 next 参数
-    const nextPath = next || searchParams.get('next') || '/generator'
-    const apiUrl = `/api/auth/google?next=${encodeURIComponent(nextPath)}`
-    // 走服务端接口，而非前端直接调用
-    window.location.href = apiUrl
+    try {
+      // 1. 获取当前网站的域名 (比如 https://www.zlseren.online)
+      const origin = window.location.origin
+      
+      // 2. 决定登录后跳去哪里
+      const nextPath = next || searchParams.get('next') || '/generator'
+      
+      // 3. 直接调用 Supabase 登录接口
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          // 拼接完整的回调地址，并带上 next 参数以便登录后跳转
+          redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(nextPath)}`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+
+      if (error) {
+        console.error('登录出错:', error.message)
+        alert('登录出错: ' + error.message) // 弹个窗提示错误
+        setIsLoading(false)
+      }
+      // 如果成功，Supabase 会自动跳转，不需要我们在代码里写 router.push
+    } catch (err) {
+      console.error('发生意外错误:', err)
+      setIsLoading(false)
+    }
   }
 
   return (
