@@ -54,6 +54,12 @@ export function Header() {
             <Link href="/#showcase" className="text-muted-foreground hover:text-foreground transition-colors">
               {t.showcase}
             </Link>
+            <Link
+              href="/pricing"
+              className={`transition-colors ${pathname === "/pricing" ? "text-banana-dark font-medium" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {t.pricing}
+            </Link>
             <Link href="/#faq" className="text-muted-foreground hover:text-foreground transition-colors">
               {t.faq}
             </Link>
