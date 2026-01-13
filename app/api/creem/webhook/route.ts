@@ -111,7 +111,8 @@ async function handleCheckoutCompleted(data: any) {
 
   // Update user subscription (you may need to create a subscriptions table)
   // For now, we'll update user metadata
-  await supabase
+  // FIX: 使用结构赋值获取 error，而不是使用 .catch
+  const { error: upsertError } = await supabase
     .from("user_subscriptions")
     .upsert({
       user_id: user_id || customer_id,
@@ -124,10 +125,11 @@ async function handleCheckoutCompleted(data: any) {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
-    .catch((error) => {
-      console.error("Error updating subscription:", error)
-      // If table doesn't exist, log and continue
-    })
+  
+  // 单独处理错误
+  if (upsertError) {
+      console.error("Error updating subscription:", upsertError)
+  }
 
   console.log(`Checkout completed for user ${user_id || customer_id}, plan: ${plan_id}`)
 }
@@ -154,16 +156,18 @@ async function handleSubscriptionCanceled(data: any) {
   const { createClient: createSupabaseClient } = await import("@supabase/supabase-js")
   const supabase = createSupabaseClient(supabaseUrl, supabaseServiceKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
 
-  await supabase
+  // FIX: 同样修复这里的 .catch 写法
+  const { error: updateError } = await supabase
     .from("user_subscriptions")
     .update({
       status: "canceled",
       updated_at: new Date().toISOString(),
     })
     .eq("subscription_id", subscription_id)
-    .catch((error) => {
-      console.error("Error updating canceled subscription:", error)
-    })
+
+  if (updateError) {
+    console.error("Error updating canceled subscription:", updateError)
+  }
 }
 
 async function handleSubscriptionUpdated(data: any) {

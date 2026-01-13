@@ -66,6 +66,14 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/pricing"
+              className={`hidden sm:inline-flex text-sm font-medium transition-colors ${
+                pathname === "/pricing" ? "text-banana-dark" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t.pricing}
+            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="gap-1">
@@ -100,6 +108,9 @@ export function Header() {
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem asChild>
                     <Link href="/generator">Generator</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/pricing">{t.pricing}</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={logout} className="text-destructive">
                     <LogOut className="w-4 h-4 mr-2" />
