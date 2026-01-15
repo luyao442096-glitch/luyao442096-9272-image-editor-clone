@@ -100,6 +100,15 @@ export async function POST(request: NextRequest) {
       billing_period: billingPeriod,
     }
 
+    // 验证 API Key 是否存在
+    if (!CREEM_API_KEY || CREEM_API_KEY.trim() === "") {
+      console.error("❌ CREEM_API_KEY is not set or empty")
+      return NextResponse.json(
+        { error: "API key not configured" },
+        { status: 500 }
+      )
+    }
+
     // 根据 Creem API 文档，正确的端点是 /v1/checkouts，认证头是 x-api-key
     const apiUrl = "https://api.creem.io/v1/checkouts"
     
@@ -111,17 +120,31 @@ export async function POST(request: NextRequest) {
         "x-api-key": `${CREEM_API_KEY.substring(0, 20)}...`,
       },
       body: requestBody,
+      apiKeyLength: CREEM_API_KEY.length,
+      apiKeyPrefix: CREEM_API_KEY.substring(0, 12),
     })
 
     // 调用 Creem API 创建 checkout session
-    const creemResponse = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": CREEM_API_KEY,
-      },
-      body: JSON.stringify(requestBody),
-    })
+    let creemResponse: Response
+    try {
+      creemResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": CREEM_API_KEY,
+        },
+        body: JSON.stringify(requestBody),
+      })
+    } catch (fetchError) {
+      console.error("❌ Fetch error:", fetchError)
+      return NextResponse.json(
+        { 
+          error: "Failed to connect to Creem API",
+          details: fetchError instanceof Error ? fetchError.message : String(fetchError)
+        },
+        { status: 500 }
+      )
+    }
 
     console.log("📥 Creem API Response Status:", creemResponse.status, creemResponse.statusText)
     
