@@ -119,16 +119,25 @@ export function PricingSection() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create checkout session")
+        const errorMessage = data.error || "Failed to create checkout session"
+        console.error("Checkout API error:", {
+          status: response.status,
+          error: data.error,
+          details: data.details,
+        })
+        throw new Error(errorMessage)
       }
 
       // Redirect to Creem checkout
       if (data.checkoutUrl) {
         window.location.href = data.checkoutUrl
+      } else {
+        throw new Error("No checkout URL received from server")
       }
     } catch (error) {
       console.error("Checkout error:", error)
-      alert(t.checkoutError || "Failed to start checkout. Please try again.")
+      const errorMessage = error instanceof Error ? error.message : (t.checkoutError || "Failed to start checkout. Please try again.")
+      alert(errorMessage)
     }
   }
 
