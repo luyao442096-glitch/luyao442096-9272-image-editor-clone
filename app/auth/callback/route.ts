@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
-// ✅ 1. 产品 ID (保持不变)
-const TARGET_PRODUCT_ID = "prod_3ljLmvK9PCT9GeVtWmtiNL"; 
+// ✅ 修正点：改回大写 'I' (prod_3Ij...) 
+// 之前误写成了小写 'l'，导致找不到产品报 500
+const TARGET_PRODUCT_ID = "prod_3IjLmvk9PCT9GeVtWmtiNL"; 
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,12 +26,11 @@ export async function POST(request: NextRequest) {
 
     const { data: { user } } = await supabase.auth.getUser()
     
-    // 测试环境允许未登录用户 (可选)
     if (!user) {
       console.log("⚠️ User not logged in, proceeding with test user...")
     }
 
-    // ✅ 2. 你的密钥 (CLI 测试已验证有效！)
+    // Key 保持不变，它是对的
     const creemApiKey = "creem_test_3dlkEtyc4co7RWiLPFNHAE"; 
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin
@@ -39,19 +39,18 @@ export async function POST(request: NextRequest) {
     const cancelUrl = `${cleanBaseUrl}/pricing`
 
     console.log("🚀 Starting Checkout with ID:", TARGET_PRODUCT_ID);
-    console.log("🔑 Using Header: x-api-key (New Rule)");
 
-    // ✅✅✅ 3. 关键修改：域名必须是 test-api.creem.io (根据你的 CLI 测试)
+    // 域名保持 test-api 不变
     const creemResponse = await fetch("https://test-api.creem.io/v1/checkout/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // ✅✅✅ 4. 关键修改：请求头必须是 x-api-key (根据你的 CLI 测试)
+        // 头部保持 x-api-key 不变
         "x-api-key": creemApiKey, 
       },
       body: JSON.stringify({
         product_id: TARGET_PRODUCT_ID,
-        customer_email: "vip_tester_new_009@gmail.com", 
+        customer_email: "vip_tester_final@gmail.com", 
         success_url: successUrl,
         cancel_url: cancelUrl,
       }),
