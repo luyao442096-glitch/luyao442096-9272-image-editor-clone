@@ -10,30 +10,17 @@ const PLAN_CONFIG = {
       price: 12.0,
     },
     yearly: {
-      // ✅ 这里我已经帮你填好了真实的 ID，直接用！
-      productId: "prod_5rZTLlWyTtk3sFfYx9LU7E", 
+      productId: "prod_5rZTLlWyTtk3sFfYx9LU7E", // ✅ 你的真实 ID
       price: 144.0,
     },
   },
   pro: {
-    monthly: {
-      productId: process.env.CREEM_PRODUCT_PRO_MONTHLY || "",
-      price: 19.5,
-    },
-    yearly: {
-      productId: process.env.CREEM_PRODUCT_PRO_YEARLY || "", 
-      price: 234.0,
-    },
+    monthly: { productId: "", price: 19.5 },
+    yearly: { productId: process.env.CREEM_PRODUCT_PRO_YEARLY || "", price: 234.0 },
   },
   max: {
-    monthly: {
-      productId: process.env.CREEM_PRODUCT_MAX_MONTHLY || "",
-      price: 80.0,
-    },
-    yearly: {
-      productId: process.env.CREEM_PRODUCT_MAX_YEARLY || "", 
-      price: 960.0,
-    },
+    monthly: { productId: "", price: 80.0 },
+    yearly: { productId: process.env.CREEM_PRODUCT_MAX_YEARLY || "", price: 960.0 },
   },
 }
 
@@ -45,9 +32,7 @@ export async function POST(request: NextRequest) {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
+          getAll() { return cookieStore.getAll() },
           setAll(cookiesToSet) {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
@@ -57,59 +42,39 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
+    const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
     const body = await request.json()
-    const { planId, billingPeriod } = body
+    let { planId, billingPeriod } = body 
 
-    if (!planId || !billingPeriod) {
-      return NextResponse.json(
-        { error: "Missing planId or billingPeriod" },
-        { status: 400 }
-      )
-    }
+    // 🔧 自动纠错
+    if (billingPeriod === "year") billingPeriod = "yearly";
+    if (billingPeriod === "month") billingPeriod = "monthly";
 
-    // Get plan configuration
     const planConfig = PLAN_CONFIG[planId as keyof typeof PLAN_CONFIG]?.[
       billingPeriod as "monthly" | "yearly"
     ]
 
-    // 检查配置是否存在
     if (!planConfig || !planConfig.productId) {
-      console.error(`Missing product ID for plan: ${planId}, period: ${billingPeriod}`);
       return NextResponse.json(
         { error: "Invalid plan configuration" },
         { status: 400 }
       )
     }
 
-    // Get API Key
     const creemApiKey = process.env.CREEM_API_KEY
     if (!creemApiKey) {
-      console.error("Creem API Key is missing");
-      return NextResponse.json(
-        { error: "Creem API key not configured" },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: "Creem API key not configured" }, { status: 500 })
     }
 
-    // Construct URLs
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin
-    // 确保 URL 格式正确，去掉末尾可能多余的斜杠
     const cleanBaseUrl = baseUrl.replace(/\/$/, "");
     const successUrl = `${cleanBaseUrl}/pricing/success?session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${cleanBaseUrl}/pricing`
-
-    console.log("Creating session with:", {
-      productId: planConfig.productId,
-      baseUrl: cleanBaseUrl
-    });
 
     // Call Creem API
     const creemResponse = await fetch("https://api.creem.io/v1/checkout/sessions", {
@@ -121,11 +86,11 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         product_id: planConfig.productId,
         customer_email: user.email,
-        customer_id: user.id,
+        // ❌ 删除了 customer_id: user.id，防止 Creem 报错
         success_url: successUrl,
         cancel_url: cancelUrl,
         metadata: {
-          user_id: user.id,
+          user_id: user.id, // 我们在这里备注了用户ID，这才是正确做法
           plan_id: planId,
           billing_period: billingPeriod,
         },
@@ -134,24 +99,17 @@ export async function POST(request: NextRequest) {
 
     if (!creemResponse.ok) {
       const errorData = await creemResponse.text()
-      console.error("Creem API error response:", errorData)
-      return NextResponse.json(
-        { error: "Failed to create checkout session" },
-        { status: 500 }
-      )
+      console.error("Creem API error:", errorData)
+      return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
     }
 
     const checkoutData = await creemResponse.json()
-
     return NextResponse.json({
       checkoutUrl: checkoutData.checkout_url || checkoutData.url,
       sessionId: checkoutData.id,
     })
   } catch (error) {
     console.error("Checkout error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
