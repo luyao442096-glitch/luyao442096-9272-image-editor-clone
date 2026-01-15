@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 
 // ✅ 1. 之前修正过的正确 Product ID
-const TARGET_PRODUCT_ID = "prod_3ljLmvK9PCT9GeVtWmtiNL"; 
+const TARGET_PRODUCT_ID = "prod_3IjLmvk9PCT9GeVtWmtiNL"; 
 
 export async function POST(request: NextRequest) {
   try {
