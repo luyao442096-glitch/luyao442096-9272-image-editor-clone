@@ -1,189 +1,75 @@
-import { NextRequest, NextResponse } from "next/server"
-import crypto from "crypto"
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
-export async function POST(request: NextRequest) {
+// 1. 使用 Service Role Key 初始化管理员权限的数据库客户端
+// 这允许代码直接修改用户的积分字段
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+// 2. 配置每个套餐对应的积分发放额度
+const PLAN_CREDITS: Record<string, number> = {
+  "basic": 2400,
+  "pro":   4800,
+  "max":   12000
+};
+
+export async function POST(req: NextRequest) {
   try {
-    const webhookSecret = process.env.CREEM_WEBHOOK_SECRET
-    if (!webhookSecret) {
-      console.error("CREEM_WEBHOOK_SECRET not configured")
-      return NextResponse.json(
-        { error: "Webhook secret not configured" },
-        { status: 500 }
-      )
+    // 解析来自 Creem 的通知数据
+    const body = await req.json();
+    const { event, data } = body;
+
+    console.log("📩 收到 Webhook 事件:", event);
+
+    // 3. 核心逻辑：当支付完成时触发
+    if (event === "checkout.completed") {
+      const customerEmail = data.customer_email;
+      
+      // 从支付元数据中获取套餐 ID，默认为 basic
+      const planId = data.metadata?.planId || "basic"; 
+
+      console.log(`✅ 开始为用户 ${customerEmail} 充值套餐: ${planId}`);
+
+      const creditsToAdd = PLAN_CREDITS[planId] || 0;
+
+      if (creditsToAdd > 0 && customerEmail) {
+        // 4. 首先查询该用户当前的积分
+        const { data: profile, error: fetchError } = await supabaseAdmin
+          .from("profiles")
+          .select("credits")
+          .eq("email", customerEmail)
+          .single();
+
+        if (profile) {
+          // 5. 计算新总额并在数据库中累加
+          const newCredits = (profile.credits || 0) + creditsToAdd;
+          
+          const { error: updateError } = await supabaseAdmin
+            .from("profiles")
+            .update({ 
+              credits: newCredits,
+              subscription_tier: planId 
+            })
+            .eq("email", customerEmail);
+
+          if (!updateError) {
+            console.log(`🚀 充值成功！${customerEmail} 当前积分已更新为: ${newCredits}`);
+          } else {
+            console.error("❌ 数据库更新失败:", updateError);
+          }
+        } else {
+          console.error("❌ 未找到匹配该 Email 的用户档案");
+        }
+      }
     }
 
-    // Get the raw body for signature verification
-    const body = await request.text()
-    const signature = request.headers.get("x-creem-signature")
+    // 必须返回 200 状态码告诉 Creem 你已经收到了信号
+    return NextResponse.json({ received: true }, { status: 200 });
 
-    if (!signature) {
-      return NextResponse.json(
-        { error: "Missing signature" },
-        { status: 401 }
-      )
-    }
-
-    // Verify webhook signature
-    const expectedSignature = crypto
-      .createHmac("sha256", webhookSecret)
-      .update(body)
-      .digest("hex")
-
-    if (signature !== expectedSignature) {
-      console.error("Invalid webhook signature")
-      return NextResponse.json(
-        { error: "Invalid signature" },
-        { status: 401 }
-      )
-    }
-
-    // Parse webhook payload
-    const event = JSON.parse(body)
-    const { type, data } = event
-
-    console.log("Creem webhook event:", type, data)
-
-    // Handle different event types
-    switch (type) {
-      case "checkout.completed":
-        await handleCheckoutCompleted(data)
-        break
-      case "subscription.active":
-        await handleSubscriptionActive(data)
-        break
-      case "subscription.canceled":
-        await handleSubscriptionCanceled(data)
-        break
-      case "subscription.updated":
-        await handleSubscriptionUpdated(data)
-        break
-      case "payment.succeeded":
-        await handlePaymentSucceeded(data)
-        break
-      case "payment.failed":
-        await handlePaymentFailed(data)
-        break
-      default:
-        console.log(`Unhandled event type: ${type}`)
-    }
-
-    return NextResponse.json({ received: true })
-  } catch (error) {
-    console.error("Webhook error:", error)
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    )
+  } catch (err: any) {
+    console.error("❌ Webhook 处理异常:", err.message);
+    return NextResponse.json({ error: err.message }, { status: 400 });
   }
-}
-
-async function handleCheckoutCompleted(data: any) {
-  const { customer_id, metadata, subscription_id } = data
-
-  if (!customer_id || !metadata) {
-    console.error("Missing customer_id or metadata in checkout.completed")
-    return
-  }
-
-  const { user_id, plan_id, billing_period } = metadata
-
-  // Use service role key for admin operations
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  if (!supabaseUrl) {
-    console.error("NEXT_PUBLIC_SUPABASE_URL not configured")
-    return
-  }
-
-  // Create admin client for database operations
-  const { createClient: createSupabaseClient } = await import("@supabase/supabase-js")
-  const supabase = createSupabaseClient(supabaseUrl, supabaseServiceKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-
-  // Calculate credits based on plan
-  const creditsMap: Record<string, { monthly: number; yearly: number }> = {
-    basic: { monthly: 200, yearly: 2400 },
-    pro: { monthly: 800, yearly: 9600 },
-    max: { monthly: 3600, yearly: 43200 },
-  }
-
-  const credits = creditsMap[plan_id]?.[billing_period as "monthly" | "yearly"] || 0
-
-  // Update user subscription (you may need to create a subscriptions table)
-  // For now, we'll update user metadata
-  // FIX: 使用结构赋值获取 error，而不是使用 .catch
-  const { error: upsertError } = await supabase
-    .from("user_subscriptions")
-    .upsert({
-      user_id: user_id || customer_id,
-      plan_id,
-      billing_period,
-      subscription_id,
-      status: "active",
-      credits,
-      credits_used: 0,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    })
-  
-  // 单独处理错误
-  if (upsertError) {
-      console.error("Error updating subscription:", upsertError)
-  }
-
-  console.log(`Checkout completed for user ${user_id || customer_id}, plan: ${plan_id}`)
-}
-
-async function handleSubscriptionActive(data: any) {
-  const { customer_id, subscription_id } = data
-  console.log(`Subscription active: ${subscription_id} for customer ${customer_id}`)
-  // Update subscription status in database
-}
-
-async function handleSubscriptionCanceled(data: any) {
-  const { customer_id, subscription_id } = data
-  console.log(`Subscription canceled: ${subscription_id} for customer ${customer_id}`)
-  
-  // Update subscription status in database
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-  if (!supabaseUrl) {
-    console.error("NEXT_PUBLIC_SUPABASE_URL not configured")
-    return
-  }
-
-  const { createClient: createSupabaseClient } = await import("@supabase/supabase-js")
-  const supabase = createSupabaseClient(supabaseUrl, supabaseServiceKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-
-  // FIX: 同样修复这里的 .catch 写法
-  const { error: updateError } = await supabase
-    .from("user_subscriptions")
-    .update({
-      status: "canceled",
-      updated_at: new Date().toISOString(),
-    })
-    .eq("subscription_id", subscription_id)
-
-  if (updateError) {
-    console.error("Error updating canceled subscription:", updateError)
-  }
-}
-
-async function handleSubscriptionUpdated(data: any) {
-  const { customer_id, subscription_id } = data
-  console.log(`Subscription updated: ${subscription_id} for customer ${customer_id}`)
-  // Update subscription details in database
-}
-
-async function handlePaymentSucceeded(data: any) {
-  const { customer_id, amount, currency } = data
-  console.log(`Payment succeeded: ${amount} ${currency} for customer ${customer_id}`)
-  // Handle successful payment
-}
-
-async function handlePaymentFailed(data: any) {
-  const { customer_id, amount, currency } = data
-  console.log(`Payment failed: ${amount} ${currency} for customer ${customer_id}`)
-  // Handle failed payment
 }
