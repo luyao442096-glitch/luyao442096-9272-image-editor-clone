@@ -6,11 +6,12 @@ import { cookies } from "next/headers"
 const PLAN_CONFIG = {
   basic: {
     monthly: {
-      productId: process.env.CREEM_PRODUCT_BASIC_MONTHLY || "",
+      productId: process.env.CREEM_PRODUCT_BASIC_MONTHLY || "", 
       price: 12.0,
     },
     yearly: {
-      productId: process.env.CREEM_PRODUCT_BASIC_YEARLY || "",
+      // ✅ 这里我已经帮你填好了真实的 ID，直接用！
+      productId: "prod_5rZTLlWyTtk3sFfYx9LU7E", 
       price: 144.0,
     },
   },
@@ -20,7 +21,7 @@ const PLAN_CONFIG = {
       price: 19.5,
     },
     yearly: {
-      productId: process.env.CREEM_PRODUCT_PRO_YEARLY || "",
+      productId: process.env.CREEM_PRODUCT_PRO_YEARLY || "", 
       price: 234.0,
     },
   },
@@ -30,7 +31,7 @@ const PLAN_CONFIG = {
       price: 80.0,
     },
     yearly: {
-      productId: process.env.CREEM_PRODUCT_MAX_YEARLY || "",
+      productId: process.env.CREEM_PRODUCT_MAX_YEARLY || "", 
       price: 960.0,
     },
   },
@@ -38,7 +39,6 @@ const PLAN_CONFIG = {
 
 export async function POST(request: NextRequest) {
   try {
-    // Get authenticated user
     const cookieStore = await cookies()
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -65,7 +65,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Parse request body
     const body = await request.json()
     const { planId, billingPeriod } = body
 
@@ -81,32 +80,43 @@ export async function POST(request: NextRequest) {
       billingPeriod as "monthly" | "yearly"
     ]
 
+    // 检查配置是否存在
     if (!planConfig || !planConfig.productId) {
+      console.error(`Missing product ID for plan: ${planId}, period: ${billingPeriod}`);
       return NextResponse.json(
         { error: "Invalid plan configuration" },
         { status: 400 }
       )
     }
 
-    // Create Creem checkout session
+    // Get API Key
     const creemApiKey = process.env.CREEM_API_KEY
     if (!creemApiKey) {
+      console.error("Creem API Key is missing");
       return NextResponse.json(
         { error: "Creem API key not configured" },
         { status: 500 }
       )
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin
-    const successUrl = `${baseUrl}/pricing/success?session_id={CHECKOUT_SESSION_ID}`
-    const cancelUrl = `${baseUrl}/pricing`
+    // Construct URLs
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin
+    // 确保 URL 格式正确，去掉末尾可能多余的斜杠
+    const cleanBaseUrl = baseUrl.replace(/\/$/, "");
+    const successUrl = `${cleanBaseUrl}/pricing/success?session_id={CHECKOUT_SESSION_ID}`
+    const cancelUrl = `${cleanBaseUrl}/pricing`
 
-    // Call Creem API to create checkout session
+    console.log("Creating session with:", {
+      productId: planConfig.productId,
+      baseUrl: cleanBaseUrl
+    });
+
+    // Call Creem API
     const creemResponse = await fetch("https://api.creem.io/v1/checkout/sessions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${creemApiKey}`,
+        "Authorization": `Bearer ${creemApiKey}`,
       },
       body: JSON.stringify({
         product_id: planConfig.productId,
@@ -124,7 +134,7 @@ export async function POST(request: NextRequest) {
 
     if (!creemResponse.ok) {
       const errorData = await creemResponse.text()
-      console.error("Creem API error:", errorData)
+      console.error("Creem API error response:", errorData)
       return NextResponse.json(
         { error: "Failed to create checkout session" },
         { status: 500 }
