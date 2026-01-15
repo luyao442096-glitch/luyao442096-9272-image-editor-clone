@@ -75,19 +75,22 @@ export async function POST(request: NextRequest) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin
     const cleanBaseUrl = baseUrl.replace(/\/$/, "")
-    const successUrl = `${cleanBaseUrl}/pricing/success?session_id={CHECKOUT_SESSION_ID}`
-    const cancelUrl = `${cleanBaseUrl}/pricing`
+    // Creem API 会在成功时重定向到 success_url，并附加查询参数
+    const successUrl = `${cleanBaseUrl}/pricing/success`
 
-    // 准备请求体
+    // 准备请求体 - 根据 Creem API 文档格式
+    // 注意：Creem API 不支持 cancel_url 参数
     const requestBody: any = {
       product_id: productId,
       success_url: successUrl,
-      cancel_url: cancelUrl,
     }
 
-    // 添加可选字段
+    // 添加客户信息 - 使用 customer 对象格式
     if (user.email) {
-      requestBody.customer_email = user.email
+      requestBody.customer = {
+        email: user.email,
+        id: user.id,
+      }
     }
 
     // 添加 metadata
@@ -155,12 +158,24 @@ export async function POST(request: NextRequest) {
     const checkoutData = await creemResponse.json()
     
     console.log("✅ Checkout session created:", {
+      fullResponse: checkoutData,
       sessionId: checkoutData.id,
-      checkoutUrl: checkoutData.checkout_url || checkoutData.url,
+      checkoutUrl: checkoutData.checkout_url || checkoutData.url || checkoutData.checkoutUrl,
     })
 
+    // Creem API 返回的 checkout_url 字段名可能是 checkout_url
+    const checkoutUrl = checkoutData.checkout_url || checkoutData.url || checkoutData.checkoutUrl
+
+    if (!checkoutUrl) {
+      console.error("❌ No checkout URL in response:", checkoutData)
+      return NextResponse.json(
+        { error: "No checkout URL received from Creem API", details: checkoutData },
+        { status: 500 }
+      )
+    }
+
     return NextResponse.json({
-      checkoutUrl: checkoutData.checkout_url || checkoutData.url,
+      checkoutUrl: checkoutUrl,
       sessionId: checkoutData.id,
     })
   } catch (error) {

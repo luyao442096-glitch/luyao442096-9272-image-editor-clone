@@ -18,12 +18,13 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify the session with Creem API
+    // 注意：根据 Creem API 文档，查询 checkout session 的端点可能是 /v1/checkouts/{id}
     const creemResponse = await fetch(
-      `https://api.creem.io/v1/checkout/sessions/${sessionId}`,
+      `https://api.creem.io/v1/checkouts/${sessionId}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${creemApiKey}`,
+          "x-api-key": creemApiKey,
         },
       }
     )
