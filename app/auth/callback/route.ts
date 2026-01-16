@@ -1,5 +1,4 @@
-// 👇 把这一行改了：
-import { createClient } from "@/lib/supabase/server"; 
+import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -8,7 +7,10 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/";
 
   if (code) {
-    const supabase = createClient();
+    // ✅ 修复点：加了 await！
+    // 因为 createClient 是异步的，必须等它创建好才能用
+    const supabase = await createClient();
+    
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       return NextResponse.redirect(`${origin}${next}`);
