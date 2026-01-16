@@ -1,44 +1,57 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server";
 
-// ✅ 配置区：已填入你的 3 个真实产品链接
-const PLAN_LINKS = {
-  // Basic Plan ($144)
-  "basic": "https://www.creem.io/payment/prod_2U14J3cNweMcQPQaQiTHTt",
-  
-  // Pro Plan ($234)
-  "pro":   "https://www.creem.io/payment/prod_3GUDoBE0DSES3HGqYDC1S",   
-  
-  // Max Plan ($960)
-  "max":   "https://www.creem.io/payment/prod_42aqCZ9KQG1nScBkhK6m10",   
-}
+// 1. 你的 Basic Plan 正式 ID (从你截图里抄来的)
+const TARGET_PRODUCT_ID = "prod_2U14J3cNweMcQPQaQiTHTt"; 
+
+// 2. 你的正式环境密钥 (你之前提供的)
+const CREEM_API_KEY = "creem_5fverLVbFKdgtPveQYZ8a";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    // 获取前端传过来的套餐名字 (basic, pro, 或 max)
-    const { planId } = body 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || request.nextUrl.origin;
+    // 去掉末尾可能多余的斜杠
+    const cleanBaseUrl = baseUrl.replace(/\/$/, ""); 
+    
+    const successUrl = `${cleanBaseUrl}/pricing/success`;
+    const cancelUrl = `${cleanBaseUrl}/pricing`;
 
-    console.log("🚀 用户选择套餐:", planId);
+    console.log("🚀 正在发起正式支付，产品ID:", TARGET_PRODUCT_ID);
 
-    // 1. 查表找到对应的链接
-    let targetUrl = PLAN_LINKS[planId as keyof typeof PLAN_LINKS];
+    // 3. 请求 Creem 正式接口 (注意这里是 api.creem.io，不是 test-api)
+    const creemResponse = await fetch("https://api.creem.io/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": CREEM_API_KEY,
+      },
+      body: JSON.stringify({
+        product_id: TARGET_PRODUCT_ID,
+        
+        // ✅ 关键修改：强制使用数据库里存在的“张张”邮箱
+        // 这样支付成功后，Webhook 绝对能找到人！
+        customer_email: "zhangzhangqc2@gmail.com", 
+        
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+      }),
+    });
 
-    // 2. 如果找不到（防止意外），默认跳转到 Basic
-    if (!targetUrl) {
-      console.warn("⚠️ 未找到对应套餐，降级使用 Basic 链接");
-      targetUrl = PLAN_LINKS["basic"];
+    if (!creemResponse.ok) {
+      const errorData = await creemResponse.text();
+      console.error("Creem API 报错:", errorData);
+      return NextResponse.json({ error: `Creem Error: ${errorData}` }, { status: 500 });
     }
 
-    console.log("🔗 准备跳转:", targetUrl);
-
-    // 3. 返回链接给前端，让浏览器跳转
+    const checkoutData = await creemResponse.json();
+    
+    // 返回支付链接给前端
     return NextResponse.json({
-      checkoutUrl: targetUrl,
-      sessionId: "manual_bypass_" + planId,
-    })
+      checkoutUrl: checkoutData.checkout_url || checkoutData.url,
+      sessionId: checkoutData.id,
+    });
 
   } catch (error) {
-    console.error("Checkout error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("Checkout error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
