@@ -3,13 +3,13 @@ import { NextRequest, NextResponse } from "next/server"
 // ✅ 配置区：已填入你的 3 个真实产品链接
 const PLAN_LINKS = {
   // Basic Plan ($144)
-  "basic": "https://www.creem.io/test/payment/prod_Ny8JWi4uGfXH3TkdKr2Q3",
+  "basic": "https://www.creem.io/payment/prod_2U14J3cNweMcQPQaQiTHTt",
   
   // Pro Plan ($234)
-  "pro":   "https://www.creem.io/test/payment/prod_LNwpgrZ9GR2YkDC6Rh6jY",   
+  "pro":   "https://www.creem.io/payment/prod_3GUDoBE0DSES3HGqYDC1S",   
   
   // Max Plan ($960)
-  "max":   "https://www.creem.io/test/payment/prod_7MFqdMaM7ps60vHieQTdHF",   
+  "max":   "https://www.creem.io/payment/prod_42aqCZ9KQG1nScBkhK6m10",   
 }
 
 export async function POST(request: NextRequest) {
