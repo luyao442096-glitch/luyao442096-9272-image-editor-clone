@@ -1,7 +1,7 @@
 "use client"
 
-import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
+import type React from "react";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client"
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
@@ -11,7 +11,7 @@ interface User {
   name: string
   avatar?: string
   isPro: boolean
-  credits: number
+  credits: number // This will now be fetched from the database
 }
 
 interface AuthContextType {
@@ -21,57 +21,90 @@ interface AuthContextType {
   logout: () => Promise<void>
   signup: (email: string, password: string, name: string) => Promise<boolean>
   signInWithGoogle: () => Promise<void>
+  refreshUser: () => Promise<void>; // Added to allow manual refresh of user data
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 // Helper function to map Supabase user to app user
-function mapSupabaseUserToAppUser(supabaseUser: SupabaseUser | null): User | null {
-  if (!supabaseUser) return null
-
-  return {
-    id: supabaseUser.id,
-    email: supabaseUser.email || "",
-    name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
-    avatar: supabaseUser.user_metadata?.avatar_url || supabaseUser.user_metadata?.picture,
-    isPro: false, // You can extend this based on your business logic
-    credits: 10, // You can fetch this from your database
-  }
-}
+// This helper is no longer needed as the logic is integrated into AuthProvider
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const supabase = createClient()
 
-  useEffect(() => {
-    // Get initial session
-    const initAuth = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        setUser(mapSupabaseUserToAppUser(session?.user ?? null))
-      } catch (error) {
-        console.error("Error getting session:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  // Define the structure of data fetched from the 'profiles' table
+  interface UserProfileData {
+    credits: number;
+    is_pro: boolean; // Assuming 'is_pro' is also stored in your profiles table
+    // Add any other custom fields you store in 'profiles' here
+  }
 
-    initAuth()
+  // Function to fetch user profile data (including credits) from the 'profiles' table
+  const fetchUserProfileData = useCallback(async (supabaseUser: SupabaseUser): Promise<UserProfileData | null> => {
+    const { data: profile, error } = await supabase
+      .from('profiles') // Assuming your custom user data is in a 'profiles' table
+      .select('credits, is_pro') // Select credits and any other relevant fields like is_pro
+      .eq('id', supabaseUser.id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching user profile data:', error);
+      return null;
+    }
+    return profile;
+  }, [supabase]);
+
+  // Function to fetch and set the full user object (Supabase user + custom profile)
+  const fetchAndSetUser = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const supabaseUser = session.user;
+        const profileData = await fetchUserProfileData(supabaseUser);
+
+        setUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || "",
+          name: supabaseUser.user_metadata?.full_name || supabaseUser.user_metadata?.name || supabaseUser.email?.split("@")[0] || "User",
+          avatar: supabaseUser.user_metadata?.avatar_url || supabaseUser.user_metadata?.picture,
+          isPro: profileData?.is_pro || false, // Use fetched is_pro, default to false
+          credits: profileData?.credits || 0, // Use fetched credits, default to 0
+        });
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Error in fetchAndSetUser:", error);
+      setUser(null); // Ensure user is null on error
+    } finally {
+      setIsLoading(false);
+    }
+  }, [supabase, fetchUserProfileData]);
+
+  // Function to manually refresh user data
+  const refreshUser = useCallback(async () => {
+    await fetchAndSetUser();
+  }, [fetchAndSetUser]);
+
+  useEffect(() => {
+    // Initial load of user data
+    fetchAndSetUser();
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(mapSupabaseUserToAppUser(session?.user ?? null))
-      setIsLoading(false)
+      // When auth state changes (login, logout, token refresh), re-fetch user data
+      fetchAndSetUser();
     })
 
     return () => {
       subscription.unsubscribe()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchAndSetUser]); // Dependency on fetchAndSetUser
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
@@ -168,7 +201,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  return <AuthContext.Provider value={{ user, isLoading, login, logout, signup, signInWithGoogle }}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={{ user, isLoading, login, logout, signup, signInWithGoogle, refreshUser }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
