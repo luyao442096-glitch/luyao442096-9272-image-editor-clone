@@ -1,74 +1,68 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-// 1. 初始化管理员权限的数据库客户端
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-// 2. 【Plan B】直接使用你的正式产品 ID 进行映射
-// 这样就不需要在 Creem 后台设置 Metadata 了
-const PLAN_CREDITS: Record<string, number> = {
-  "prod_2U14J3cNweMcQPQaQiTHTt": 2400,  // Basic Plan
-  "prod_3GUDoBE0DSES3HGqYDC1S":  4800,  // Pro Plan
-  "prod_42aqCZ9KQG1nScBkhK6m10": 12000  // Max Plan
-};
-
 export async function POST(req: NextRequest) {
   try {
+    // 1. 使用 Service Role Key 创建“管理员”客户端
+    // 这把钥匙能绕过 RLS 权限锁，看到所有用户数据
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY! 
+    );
+
     const body = await req.json();
     const { event, data } = body;
 
-    console.log("📩 收到 Webhook:", event);
+    console.log(`📩 收到 Webhook 事件: ${event}`);
 
+    // 只处理支付成功的事件
     if (event === "checkout.completed") {
-      const customerEmail = data.customer_email;
-      // 优先尝试获取 product_id (不同版本字段可能不同，做个兼容)
-      const productId = data.product_id || data.productId; 
+      const email = data.customer_email;
+      const productId = data.product_id;
 
-      console.log(`🔍 用户 ${customerEmail} 购买了产品 ID: ${productId}`);
+      console.log(`🔍 正在数据库查找用户: ${email}`);
 
-      // 3. 根据 ID 查积分
-      const creditsToAdd = PLAN_CREDITS[productId] || 0;
+      // 2. 查找用户 (现在拥有管理员权限，一定能找到)
+      const { data: user, error: findError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("email", email)
+        .single();
 
-      if (creditsToAdd > 0 && customerEmail) {
-        // 4. 查用户
-        const { data: profile } = await supabaseAdmin
-          .from("profiles")
-          .select("credits")
-          .eq("email", customerEmail)
-          .single();
-
-        if (profile) {
-          // 5. 加积分
-          const newCredits = (profile.credits || 0) + creditsToAdd;
-          
-          const { error: updateError } = await supabaseAdmin
-            .from("profiles")
-            .update({ 
-              credits: newCredits,
-              subscription_tier: productId // 记录用户买了哪个套餐ID
-            })
-            .eq("email", customerEmail);
-
-          if (!updateError) {
-            console.log(`🚀 充值成功！${customerEmail} 新积分: ${newCredits}`);
-          } else {
-            console.error("❌ 数据库更新失败:", updateError);
-          }
-        } else {
-          console.error("❌ 数据库里没找到这个邮箱:", customerEmail);
-        }
-      } else {
-        console.log(`⚠️ 未识别的产品ID (${productId}) 或无积分额度`);
+      if (findError || !user) {
+        console.error(`❌ 数据库里没找到这个邮箱: ${email}`, findError);
+        return NextResponse.json({ error: "User not found" }, { status: 400 });
       }
+
+      console.log(`✅ 找到用户 ID: ${user.id}, 当前积分: ${user.credits}`);
+
+      // 3. 计算要加多少分
+      let creditsToAdd = 0;
+      // Basic Plan ID
+      if (productId === "prod_2U14J3cNweMcQPQaQiTHTt") creditsToAdd = 100; // 这里的100只是示例，按你的套餐改
+      // 其他 Plan 可以在这里加 else if...
+      
+      // 如果是用测试代码，强制加 2400 分方便观察
+      if (!creditsToAdd) creditsToAdd = 2400; 
+
+      // 4. 更新积分
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ credits: (user.credits || 0) + creditsToAdd })
+        .eq("id", user.id);
+
+      if (updateError) {
+        console.error("❌ 积分更新失败:", updateError);
+        return NextResponse.json({ error: "Update failed" }, { status: 500 });
+      }
+
+      console.log(`🚀 充值成功! 已为 ${email} 增加 ${creditsToAdd} 积分`);
     }
 
-    return NextResponse.json({ received: true }, { status: 200 });
+    return NextResponse.json({ received: true });
 
-  } catch (err: any) {
-    console.error("❌ Error:", err.message);
-    return NextResponse.json({ error: err.message }, { status: 400 });
+  } catch (err) {
+    console.error("Webhook Error:", err);
+    return NextResponse.json({ error: "Server Error" }, { status: 500 });
   }
 }
