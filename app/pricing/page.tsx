@@ -6,24 +6,24 @@ import { Footer } from "@/components/footer"
 
 // 定价页面特定的元数据
 export const metadata: Metadata = {
-  title: "Pricing - Nano Banana AI Image Editor",
-  description: "Flexible pricing plans for Nano Banana AI Image Editor. Choose Basic, Pro, or Max Plan to suit your needs. Upgrade or downgrade at any time.",
+  title: "Pricing - Zlseren AI 智能助手",
+  description: "Zlseren 灵活的定价方案，采用积分制管理，无订阅压力，充值即用。选择 Basic、Pro 或 Max Plan 满足您的需求，随时升级或降级。",
   keywords: [
-    "Nano Banana Pricing",
-    "AI Image Editor Pricing",
-    "AI Editor Plans",
-    "Nano Banana Plans",
-    "AI Image Editing Subscription",
-    "AI Editor Pricing"
+    "Zlseren Pricing",
+    "AI 智能助手定价",
+    "AI 助手套餐",
+    "Zlseren 套餐",
+    "AI 服务积分制",
+    "按需付费 AI 助手"
   ],
   openGraph: {
-    title: "Pricing - Nano Banana AI Image Editor",
-    description: "Flexible pricing plans for Nano Banana AI Image Editor. Choose Basic, Pro, or Max Plan to suit your needs. Upgrade or downgrade at any time.",
+    title: "Pricing - Zlseren AI 智能助手",
+    description: "Zlseren 灵活的定价方案，采用积分制管理，无订阅压力，充值即用。选择 Basic、Pro 或 Max Plan 满足您的需求，随时升级或降级。",
     url: "https://www.zlseren.online/pricing"
   },
   twitter: {
-    title: "Pricing - Nano Banana AI Image Editor",
-    description: "Flexible pricing plans for Nano Banana AI Image Editor. Choose Basic, Pro, or Max Plan to suit your needs. Upgrade or downgrade at any time.",
+    title: "Pricing - Zlseren AI 智能助手",
+    description: "Zlseren 灵活的定价方案，采用积分制管理，无订阅压力，充值即用。选择 Basic、Pro 或 Max Plan 满足您的需求，随时升级或降级。",
   },
   alternates: {
     canonical: "https://www.zlseren.online/pricing"

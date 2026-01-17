@@ -8,23 +8,23 @@ import GoogleLoginButton from '@/components/google-login-button';
 
 // 登录页面特定的元数据
 export const metadata: Metadata = {
-  title: "Login - Nano Banana AI Image Editor",
-  description: "Login to your Nano Banana account to access AI image editing features and manage your credits.",
+  title: "登录 - Zlseren AI 智能助手",
+  description: "登录到您的 Zlseren 账户，访问 AI 智能助手功能并管理您的积分。",
   keywords: [
-    "Nano Banana Login",
-    "AI Image Editor Login",
-    "Nano Banana Account",
-    "AI Editor Login",
-    "Nano Banana Sign In"
+    "Zlseren 登录",
+    "AI 智能助手登录",
+    "Zlseren 账户",
+    "AI 助手登录",
+    "Zlseren 登录入口"
   ],
   openGraph: {
-    title: "Login - Nano Banana AI Image Editor",
-    description: "Login to your Nano Banana account to access AI image editing features and manage your credits.",
+    title: "登录 - Zlseren AI 智能助手",
+    description: "登录到您的 Zlseren 账户，访问 AI 智能助手功能并管理您的积分。",
     url: "https://www.zlseren.online/login"
   },
   twitter: {
-    title: "Login - Nano Banana AI Image Editor",
-    description: "Login to your Nano Banana account to access AI image editing features and manage your credits.",
+    title: "登录 - Zlseren AI 智能助手",
+    description: "登录到您的 Zlseren 账户，访问 AI 智能助手功能并管理您的积分。",
   },
   alternates: {
     canonical: "https://www.zlseren.online/login"
