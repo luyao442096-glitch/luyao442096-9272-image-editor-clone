@@ -12,6 +12,7 @@ export async function GET() {
     { path: '/pricing', priority: 0.8, changefreq: 'weekly' },
     { path: '/login', priority: 0.6, changefreq: 'monthly' },
     { path: '/pricing/success', priority: 0.5, changefreq: 'monthly' },
+    { path: '/auth/auth-code-error', priority: 0.4, changefreq: 'monthly' },
   ];
   
   // 生成XML内容
