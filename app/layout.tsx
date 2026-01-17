@@ -10,36 +10,33 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Zlseren - 全球领先的 AI 智能助手 | 积分制按需付费，解锁无限创意",
+  title: "Zlseren - 全球领先的 AI 智能助手 | 积分制按需付费",
   description:
-    "Zlseren 提供稳定、高效的 AI 对话与创作工具。采用灵活的积分制管理，无订阅压力，充值即用。无论是创意写作、代码编写还是日常办公，Zlseren 都是您最可靠的 AI 伙伴。立即注册，开启您的智能之旅。",
+    "Zlseren 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。",
   generator: 'v0.app',
   // SEO 增强
   keywords: [
-    "AI智能助手",
-    "Zlseren",
+    "ZlserenAI",
+    "AI助手",
+    "积分充值",
+    "AI绘画",
     "AI对话",
-    "AI创作",
-    "积分制",
-    "按需付费",
-    "AI伙伴",
-    "创意写作",
-    "代码编写",
-    "日常办公"
+    "Creem支付",
+    "智能效率工具"
   ],
   // 社交媒体元数据
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
     url: 'https://www.zlseren.online/',
-    title: 'Zlseren - 全球领先的 AI 智能助手 | 积分制按需付费，解锁无限创意',
-    description: 'Zlseren 提供稳定、高效的 AI 对话与创作工具。采用灵活的积分制管理，无订阅压力，充值即用。无论是创意写作、代码编写还是日常办公，Zlseren 都是您最可靠的 AI 伙伴。立即注册，开启您的智能之旅。',
-    siteName: 'Zlseren',
+    title: 'Zlseren - 全球领先的 AI 智能助手 | 积分制按需付费',
+    description: 'Zlseren 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。',
+    siteName: 'Zlseren AI',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Zlseren - 全球领先的 AI 智能助手 | 积分制按需付费，解锁无限创意',
-    description: 'Zlseren 提供稳定、高效的 AI 对话与创作工具。采用灵活的积分制管理，无订阅压力，充值即用。无论是创意写作、代码编写还是日常办公，Zlseren 都是您最可靠的 AI 伙伴。立即注册，开启您的智能之旅。',
+    title: 'Zlseren - 全球领先的 AI 智能助手 | 积分制按需付费',
+    description: 'Zlseren 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。',
     creator: '@ZlserenAI'
   },
   // 规范URL
@@ -75,12 +72,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@type': 'WebSite',
-              name: 'Zlseren',
+              name: 'Zlseren AI',
               url: 'https://www.zlseren.online/',
-              description: 'Zlseren 提供稳定、高效的 AI 对话与创作工具。采用灵活的积分制管理，无订阅压力，充值即用。无论是创意写作、代码编写还是日常办公，Zlseren 都是您最可靠的 AI 伙伴。立即注册，开启您的智能之旅。',
+              description: 'Zlseren 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。',
               publisher: {
                 '@type': 'Organization',
-                name: 'Zlseren Team',
+                name: 'Zlseren AI',
               },
               potentialAction: {
                 '@type': 'SearchAction',
