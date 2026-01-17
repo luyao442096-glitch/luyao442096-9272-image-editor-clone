@@ -18,22 +18,56 @@ export async function POST(request: NextRequest) {
     // 获取当前用户的身份验证令牌
     const authHeader = request.headers.get('Authorization');
     
-    // 测试模式：如果没有提供令牌，尝试使用一个硬编码的测试用户ID
-    // 注意：这只是为了测试方便，生产环境中应该移除
-    let userId = "test_user_id";
+    console.log("🔍 收到请求，检查授权头...");
+    console.log(`📌 授权头: ${authHeader || "没有提供"}`);
+    
+    let userId = null;
     if (authHeader) {
       const token = authHeader.replace('Bearer ', '');
       
+      console.log("🔐 正在验证令牌...");
+      
       // 验证用户身份
-      const { data: { user }, error: verifyError } = await supabase.auth.getUser(token);
-      if (user && !verifyError) {
-        userId = user.id;
-      } else {
-        console.warn("⚠️ 令牌验证失败，使用测试用户ID");
-        // 不返回错误，继续使用测试用户ID
+      try {
+        const { data: { user }, error: verifyError } = await supabase.auth.getUser(token);
+        
+        if (verifyError) {
+          console.error("❌ 令牌验证失败:", verifyError);
+        } else if (user) {
+          console.log(`✅ 令牌验证成功，用户ID: ${user.id}`);
+          userId = user.id;
+        }
+      } catch (error) {
+        console.error("❌ 令牌验证过程中发生错误:", error);
       }
     } else {
-      console.warn("⚠️ 没有提供令牌，使用测试用户ID");
+      console.warn("⚠️ 没有提供授权头");
+    }
+    
+    // 调试：打印所有用户信息
+    console.log("📊 正在获取所有用户列表...");
+    const { data: allUsers, error: listError } = await supabase
+      .from("profiles")
+      .select("id, email, credits");
+    
+    if (listError) {
+      console.error("❌ 获取用户列表失败:", listError);
+    } else {
+      console.log(`📋 找到 ${allUsers.length} 个用户:`);
+      allUsers.forEach((user, index) => {
+        console.log(`   ${index + 1}. ${user.email} (ID: ${user.id}, 积分: ${user.credits})`);
+      });
+    }
+    
+    // 如果找不到用户ID，尝试使用第一个用户的ID（仅用于测试）
+    if (!userId && allUsers && allUsers.length > 0) {
+      console.warn("⚠️ 没有有效的用户ID，使用第一个用户的ID");
+      userId = allUsers[0].id;
+    }
+    
+    if (!userId) {
+      console.error("❌ 无法获取有效的用户ID");
+      return NextResponse.json({ error: "无法获取有效的用户ID" }, { status: 400 });
     }
 
     // 获取请求体中的积分数量和产品ID
