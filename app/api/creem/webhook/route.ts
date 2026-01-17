@@ -45,18 +45,21 @@ export async function POST(req: NextRequest) {
       // 如果是用测试代码，强制加 2400 分方便观察
       if (!creditsToAdd) creditsToAdd = 2400; 
 
-      // 4. 更新积分
-      const { error: updateError } = await supabase
+      // 4. 更新积分 - 使用原子操作确保数据一致性
+      const newCredits = (user.credits || 0) + creditsToAdd;
+      const { data: updatedUser, error: updateError } = await supabase
         .from("profiles")
-        .update({ credits: (user.credits || 0) + creditsToAdd })
-        .eq("id", user.id);
+        .update({ credits: newCredits })
+        .eq("id", user.id)
+        .select()
+        .single();
 
-      if (updateError) {
+      if (updateError || !updatedUser) {
         console.error("❌ 积分更新失败:", updateError);
         return NextResponse.json({ error: "Update failed" }, { status: 500 });
       }
 
-      console.log(`🚀 充值成功! 已为 ${email} 增加 ${creditsToAdd} 积分`);
+      console.log(`🚀 充值成功! 已为 ${email} 增加 ${creditsToAdd} 积分，新积分: ${updatedUser.credits}`);
     }
 
     return NextResponse.json({ received: true });

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, Suspense } from "react"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { CheckCircle } from "lucide-react"
 import Link from "next/link"
 import { useLocale } from "@/lib/locale-context"
+import { useAuth } from "@/lib/auth-context"
 
 // 1. 创建一个 loading 组件，用于 Suspense 的 fallback
 function LoadingState() {
@@ -25,19 +26,31 @@ function LoadingState() {
 // 2. 将原本的主逻辑剥离到这个子组件中
 function PaymentVerificationContent() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const sessionId = searchParams.get("session_id")
   const { t } = useLocale()
+  const { refreshUser } = useAuth()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [verified, setVerified] = useState(false)
 
   useEffect(() => {
     if (sessionId) {
       // Verify the session with backend
       fetch(`/api/creem/verify-session?session_id=${sessionId}`)
         .then((res) => res.json())
-        .then((data) => {
+        .then(async (data) => {
           if (data.error) {
             setError(data.error)
+          } else if (data.verified) {
+            setVerified(true)
+            // 支付验证成功后，刷新用户数据以获取最新的积分
+            // 等待一小段时间确保 webhook 已经处理完成
+            setTimeout(async () => {
+              await refreshUser()
+              // 刷新页面路由以确保所有组件都更新
+              router.refresh()
+            }, 2000) // 等待 2 秒让 webhook 有时间处理
           }
           setLoading(false)
         })
@@ -49,7 +62,7 @@ function PaymentVerificationContent() {
     } else {
       setLoading(false)
     }
-  }, [sessionId])
+  }, [sessionId, refreshUser, router])
 
   if (loading) {
     return <LoadingState />
