@@ -117,6 +117,7 @@ export const translations = {
     creditCard: "Credit Card",
     debitCard: "Debit Card",
     checkoutError: "Failed to start checkout. Please try again.",
+    securePayment: "Secure Payment by Creem. Support Major Credit Cards & Global Currencies.",
   },
   zh: {
     // Header
@@ -233,6 +234,7 @@ export const translations = {
     creditCard: "信用卡",
     debitCard: "借记卡",
     checkoutError: "启动结账失败。请重试。",
+    securePayment: "安全支付由Creem提供支持。支持主要信用卡和全球货币。",
   },
 }
 

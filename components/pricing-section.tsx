@@ -247,6 +247,11 @@ export function PricingSection() {
             <span>💬 WeChat Pay</span>
           </div>
         </div>
+
+        {/* Trust signal */}
+        <div className="text-center mt-12 pt-6 border-t border-border text-sm font-medium text-foreground">
+          {t.securePayment}
+        </div>
       </div>
     </section>
   )
