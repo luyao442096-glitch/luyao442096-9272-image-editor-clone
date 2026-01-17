@@ -17,26 +17,27 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     // ------------------------------------------------------------------
-    // 1. 初始化 Supabase (普通用户模式) - 终极兼容性修复
+    // 1. 初始化 Supabase (普通用户模式)
     // ------------------------------------------------------------------
-    
-    // 第一步：等待 cookies 解析 (解决运行时 crash)
     const cookieStore = await cookies()
     
-    // 第二步：初始化 Client
     const supabase = createRouteHandlerClient({ 
-      // 关键修改：加上 'as any' 强制忽略 TypeScript 的类型报错
       cookies: () => cookieStore as any
     })
     
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    // ⚠️ 修改点：使用 getSession 替代 getUser
+    // getUser 在 Next.js 15 的 Route Handler 中如果遇到过期 Token 可能会因为无法刷新 Cookie 而报错
+    // getSession 对只读 Cookie 更友好
+    const { data: { session }, error: authError } = await supabase.auth.getSession()
+    const user = session?.user
 
     if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      console.error("❌ Auth Error (Unauthorized):", authError) // 添加日志以便调试
+      return NextResponse.json({ error: "Unauthorized", details: "登录已失效，请重新登录" }, { status: 401 })
     }
 
     // ------------------------------------------------------------------
-    // 2. 初始化 Supabase (上帝模式) - 专门用于扣费！
+    // 2. 初始化 Supabase (上帝模式) - 专门用于扣费
     // ------------------------------------------------------------------
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -82,17 +83,12 @@ export async function POST(request: NextRequest) {
     }
 
     // ------------------------------------------------------------------
-    // 4. 执行生成逻辑
+    // 4. 执行生成逻辑 (Gemini)
     // ------------------------------------------------------------------
     const body = await request.json()
     const { prompt, mode, imageUrl, aspectRatio = "1:1" } = body
 
-    // ---------------------------------------
-    // Gemini 调用逻辑
-    // ---------------------------------------
     const aspectRatioMap: Record<string, string> = { "1:1": "1:1", "auto": "1:1" }
-    
-    // ⚠️ 之前报错的就是下面这一行，现在已修复：
     const geminiAspectRatio = aspectRatioMap[aspectRatio] || "1:1"
 
     const messageContent: any[] = []
@@ -119,8 +115,6 @@ export async function POST(request: NextRequest) {
     }
     
     if (!generatedImageUrl) throw new Error("API 生成失败")
-    // ---------------------------------------
-
 
     // ------------------------------------------------------------------
     // 5. 扣除积分
