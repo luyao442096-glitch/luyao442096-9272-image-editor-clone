@@ -112,8 +112,9 @@ export async function POST(request: NextRequest) {
     const currentCredits = profile?.credits ?? 0
     
     // 如果积分不足，直接返回
-    if (currentCredits < 1) { 
-      return NextResponse.json({ error: "Insufficient credits", details: "您的积分不足，无法生成图片" }, { status: 403 })
+    const CREDITS_PER_GENERATION = 2
+    if (currentCredits < CREDITS_PER_GENERATION) { 
+      return NextResponse.json({ error: "Insufficient credits", details: `生成图片需要${CREDITS_PER_GENERATION}积分，您的积分不足` }, { status: 403 })
     }
 
     // ==========================================
@@ -165,11 +166,12 @@ export async function POST(request: NextRequest) {
     }
 
     // ==========================================
-    // 4. 扣除积分
+    // 4. 扣除积分 (每次生成扣除2分)
     // ==========================================
+    const CREDITS_PER_GENERATION = 2
     const { error: updateError } = await supabaseAdmin
       .from('profiles')
-      .update({ credits: currentCredits - 1 })
+      .update({ credits: currentCredits - CREDITS_PER_GENERATION })
       .eq('id', user.id)
 
     if (updateError) {
@@ -180,7 +182,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       imageUrl: generatedImageUrl,
-      remainingCredits: currentCredits - 1
+      remainingCredits: currentCredits - CREDITS_PER_GENERATION
     })
 
   } catch (error: any) {

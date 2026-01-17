@@ -9,7 +9,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Globe, User, LogOut, ChevronDown } from "lucide-react"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs" // 2. 引入 Supabase 客户端 (如果是新版 nextjs 使用 @supabase/ssr，请根据你的依赖调整)
+import { createClient } from "@/lib/supabase/client" // 2. 引入 Supabase 客户端
 
 export function Header() {
   const { locale, setLocale, t } = useLocale()
@@ -18,7 +18,7 @@ export function Header() {
   
   // 3. 新增：专门用于显示的实时积分状态
   const [displayCredits, setDisplayCredits] = useState(0)
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   // 4. 新增：当用户登录后，直接去 profiles 表查积分
   useEffect(() => {
