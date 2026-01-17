@@ -4,7 +4,6 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers"
 import { createClient } from "@supabase/supabase-js"
 
-// 初始化 OpenAI
 const openai = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
   apiKey: process.env.OPENROUTER_API_KEY || "",
@@ -17,46 +16,62 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     // ------------------------------------------------------------------
-    // 1. 初始化 Supabase (普通用户模式)
+    // 1. 身份验证 (双重保险模式：查 Cookie + 查 Header)
     // ------------------------------------------------------------------
-    const cookieStore = await cookies()
-    
-    const supabase = createRouteHandlerClient({ 
-      cookies: () => cookieStore as any
-    })
-    
-    // ⚠️ 修改点：使用 getSession 替代 getUser
-    // getUser 在 Next.js 15 的 Route Handler 中如果遇到过期 Token 可能会因为无法刷新 Cookie 而报错
-    // getSession 对只读 Cookie 更友好
-    const { data: { session }, error: authError } = await supabase.auth.getSession()
-    const user = session?.user
+    let user = null;
+    let authMethod = "none";
 
-    if (authError || !user) {
-      console.error("❌ Auth Error (Unauthorized):", authError) // 添加日志以便调试
-      return NextResponse.json({ error: "Unauthorized", details: "登录已失效，请重新登录" }, { status: 401 })
+    // 方式 A: 尝试从 Header 获取 Token (最稳的方式)
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader) {
+      const token = authHeader.replace('Bearer ', '');
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+      const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+      // 创建一个临时客户端来验证 Token
+      const supabaseJWT = createClient(supabaseUrl, supabaseAnonKey);
+      const { data: { user: headerUser }, error: jwtError } = await supabaseJWT.auth.getUser(token);
+      
+      if (!jwtError && headerUser) {
+        user = headerUser;
+        authMethod = "header_token";
+      }
+    }
+
+    // 方式 B: 如果 Header 没拿到，尝试从 Cookie 获取 (旧方式)
+    if (!user) {
+      try {
+        const cookieStore = await cookies();
+        const supabaseCookie = createRouteHandlerClient({ 
+          cookies: () => cookieStore as any
+        });
+        const { data: { session } } = await supabaseCookie.auth.getSession();
+        if (session?.user) {
+          user = session.user;
+          authMethod = "cookie";
+        }
+      } catch (e) {
+        console.log("Cookie auth failed:", e);
+      }
+    }
+
+    if (!user) {
+      console.error("❌ 身份验证失败: Header和Cookie都无效");
+      return NextResponse.json({ error: "Unauthorized", details: "请重新登录" }, { status: 401 });
     }
 
     // ------------------------------------------------------------------
-    // 2. 初始化 Supabase (上帝模式) - 专门用于扣费
+    // 2. 初始化 Supabase (上帝模式) - 扣费专用
     // ------------------------------------------------------------------
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("❌ 严重错误: 缺少 Supabase 环境变量")
-      return NextResponse.json({ error: "Server Configuration Error" }, { status: 500 })
+      return NextResponse.json({ error: "Server Config Error" }, { status: 500 })
     }
 
-    const supabaseAdmin = createClient(
-      supabaseUrl,
-      supabaseServiceKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    )
+    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    })
 
     // ------------------------------------------------------------------
     // 3. 检查积分
@@ -68,22 +83,19 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (profileError || !profile) {
-      console.error("无法获取积分:", profileError)
-      return NextResponse.json({ error: "账户信息错误" }, { status: 500 })
+      console.log("Profile not found, user might be new or table is empty");
+      return NextResponse.json({ error: "Account Error", details: "无法读取积分信息" }, { status: 500 });
     }
 
     const currentCredits = profile.credits ?? 0
-    console.log(`👤 用户 ${user.email} 当前积分: ${currentCredits}`)
+    console.log(`👤 用户 [${user.email}] 验证成功 (${authMethod})，当前积分: ${currentCredits}`)
 
     if (currentCredits < 1) { 
-      return NextResponse.json(
-        { error: "Insufficient credits", details: "积分不足" },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: "Insufficient credits", details: "积分不足" }, { status: 403 })
     }
 
     // ------------------------------------------------------------------
-    // 4. 执行生成逻辑 (Gemini)
+    // 4. 执行生成 (Gemini)
     // ------------------------------------------------------------------
     const body = await request.json()
     const { prompt, mode, imageUrl, aspectRatio = "1:1" } = body
@@ -107,6 +119,7 @@ export async function POST(request: NextRequest) {
     const completion = await openai.chat.completions.create(requestParams as any)
     const message = completion.choices[0]?.message as any
     let generatedImageUrl = ""
+    
     if (message?.images?.[0]?.image_url?.url) {
         generatedImageUrl = message.images[0].image_url.url
     } else if (message.content && Array.isArray(message.content)) {
@@ -119,30 +132,21 @@ export async function POST(request: NextRequest) {
     // ------------------------------------------------------------------
     // 5. 扣除积分
     // ------------------------------------------------------------------
-    const COST_PER_IMAGE = 1; 
-
     const { error: updateError } = await supabaseAdmin
       .from('profiles')
-      .update({ credits: currentCredits - COST_PER_IMAGE })
+      .update({ credits: currentCredits - 1 })
       .eq('id', user.id)
 
-    if (updateError) {
-      console.error("❌ 扣费失败报错:", updateError)
-    } else {
-      console.log(`✅ 扣费成功! 剩余积分: ${currentCredits - COST_PER_IMAGE}`)
-    }
+    if (updateError) console.error("❌ 扣费失败:", updateError)
 
     return NextResponse.json({
       success: true,
       imageUrl: generatedImageUrl,
-      remainingCredits: currentCredits - COST_PER_IMAGE
+      remainingCredits: currentCredits - 1
     })
 
   } catch (error: any) {
     console.error("Generate Error:", error)
-    return NextResponse.json(
-      { error: error.message || "Failed" },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: error.message || "Failed" }, { status: 500 })
   }
 }

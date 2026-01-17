@@ -13,6 +13,8 @@ import { ImageIcon, Sparkles, X, Plus, Download, ChevronDown, Home, Lightbulb, C
 import { Header } from "@/components/header"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
+// 1. 引入 Supabase 客户端构建函数
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 type EditorMode = "image-to-image" | "text-to-image"
 
@@ -60,6 +62,9 @@ const SAMPLE_IMAGES = [
 export default function GeneratorPage() {
   const { t } = useLocale()
   const { user } = useAuth()
+  // 2. 初始化 Supabase 客户端
+  const supabase = createClientComponentClient()
+  
   const [mode, setMode] = useState<EditorMode>("image-to-image")
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [prompt, setPrompt] = useState("")
@@ -123,6 +128,10 @@ export default function GeneratorPage() {
     setIsGenerating(true)
 
     try {
+      // 3. 获取当前的 Session Token (这就是解决 401 的关键！)
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
+
       const count = Number.parseInt(generationCount)
       const newImages: GeneratedImage[] = []
 
@@ -159,6 +168,8 @@ export default function GeneratorPage() {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              // 4. 手动携带 Token (递交身份证)
+              ...(token ? { "Authorization": `Bearer ${token}` } : {}),
             },
             body: JSON.stringify(requestBody),
           })
@@ -211,7 +222,7 @@ export default function GeneratorPage() {
             } else if (errorMsg.includes("超时") || errorMsg.includes("timeout")) {
               fullErrorMsg += `\n\n请求超时，可能是：\n1. 网络速度较慢\n2. API 服务器响应慢\n3. 模型正在加载中\n\n建议：稍后重试`
             } else if (errorMsg.includes("API 密钥") || errorMsg.includes("401") || errorMsg.includes("unauthorized")) {
-              fullErrorMsg += `\n\n认证失败：\n1. 请检查 .env.local 文件中的 OPENROUTER_API_KEY\n2. 确认 API key 正确无误\n3. 重启开发服务器以加载新的环境变量\n4. 查看服务器终端确认 API key 已加载`
+              fullErrorMsg += `\n\n认证失败：\n1. 您的登录可能已过期，请尝试重新登录\n2. 如果问题持续，请联系管理员`
             } else if (errorMsg.includes("速率限制") || errorMsg.includes("429") || errorMsg.includes("rate limit")) {
               fullErrorMsg += `\n\n请求过于频繁，请稍后重试`
             } else if (errorMsg.includes("未找到图片数据") || errorMsg.includes("响应格式")) {
@@ -229,20 +240,17 @@ export default function GeneratorPage() {
             })
           }
           
-          // Don't use fallback image - let user know it failed
-          // Only use fallback if user explicitly wants to continue
           if (count === 1) {
-            // For single image generation, don't add fallback
             throw error
           }
-          // For batch, continue with other images but log the error
         }
       }
 
       setGeneratedImages((prev) => [...newImages, ...prev])
     } catch (error: any) {
       console.error("Generation error:", error)
-      alert(error.message || "生成图片时出错，请稍后重试")
+      // alert(error.message || "生成图片时出错，请稍后重试") 
+      // Commented out to avoid double alerting since we handle it inside loop
     } finally {
       setIsGenerating(false)
     }
