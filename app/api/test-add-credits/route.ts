@@ -70,20 +70,46 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "无法获取有效的用户ID" }, { status: 400 });
     }
 
-    // 获取请求体中的积分数量和产品ID
+    // 获取请求体中的积分数量、产品ID和目标邮箱
     const body = await request.json();
-    const { credits = 2400, productId = "prod_2U14J3cNweMcQPQaQiTHTt" } = body;
+    const { 
+      credits = 2400, 
+      productId = "prod_2U14J3cNweMcQPQaQiTHTt",
+      targetEmail = null  // 新增：目标用户邮箱
+    } = body;
 
-    // 查找用户 - 只查找指定的用户ID
+    // 优先使用目标邮箱查找用户
     let profile, findError;
-    ({ data: profile, error: findError } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", userId)
-      .single());
+    if (targetEmail) {
+      console.log(`📧 正在按邮箱查找用户: ${targetEmail}`);
+      ({ data: profile, error: findError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("email", targetEmail)
+        .single());
+    } 
+    // 如果没有提供目标邮箱，使用用户ID查找
+    else if (userId) {
+      console.log(`🆔 正在按用户ID查找用户: ${userId}`);
+      ({ data: profile, error: findError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single());
+    }
+
+    // 如果找不到用户，尝试使用第一个用户
+    if (findError || !profile) {
+      console.warn("⚠️ 没找到指定用户，尝试使用第一个用户");
+      ({ data: profile, error: findError } = await supabase
+        .from("profiles")
+        .select("*")
+        .limit(1)
+        .single());
+    }
 
     if (findError || !profile) {
-      console.error(`❌ 数据库里没找到用户ID ${userId}`, findError);
+      console.error("❌ 数据库里没找到用户", findError);
       return NextResponse.json({ error: "User not found" }, { status: 400 });
     }
 
