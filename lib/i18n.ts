@@ -3,7 +3,7 @@ export type Locale = "en" | "zh"
 export const translations = {
   en: {
     // Header
-    newBanner: "Nano Banana Pro is now live",
+    newBanner: "Zlseren AI Pro is now live",
     tryNow: "Try it now",
     editor: "Editor",
     features: "Features",
@@ -69,7 +69,7 @@ export const translations = {
 
     // Showcase
     showcaseTitle: "Showcase Gallery",
-    showcaseSubtitle: "See what our users have created with Nano Banana",
+    showcaseSubtitle: "See what our users have created with Zlseren AI",
 
     // Testimonials
     testimonialsTitle: "What Users Say",
@@ -77,7 +77,7 @@ export const translations = {
 
     // FAQ
     faqTitle: "Frequently Asked Questions",
-    faqSubtitle: "Everything you need to know about Nano Banana",
+    faqSubtitle: "Everything you need to know about Zlseren AI",
 
     // Footer
     footerDescription: "Transform any image with simple text prompts. The most advanced AI image editor.",
@@ -121,7 +121,7 @@ export const translations = {
   },
   zh: {
     // Header
-    newBanner: "Nano Banana Pro 现已上线",
+    newBanner: "Zlseren AI Pro 现已上线",
     tryNow: "立即体验",
     editor: "编辑器",
     features: "功能",
@@ -186,7 +186,7 @@ export const translations = {
 
     // Showcase
     showcaseTitle: "案例画廊",
-    showcaseSubtitle: "查看用户使用Nano Banana创作的作品",
+    showcaseSubtitle: "查看用户使用Zlseren AI创作的作品",
 
     // Testimonials
     testimonialsTitle: "用户评价",

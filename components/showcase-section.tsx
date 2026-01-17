@@ -11,32 +11,32 @@ const showcaseItems = [
   {
     titleEn: "Ultra-Fast Mountain Generation",
     titleZh: "超快速山景生成",
-    descriptionEn: "Created in 0.8 seconds with Nano Banana's optimized neural engine",
-    descriptionZh: "使用 Nano Banana 优化的神经引擎在 0.8 秒内创建",
+    descriptionEn: "Created in 0.8 seconds with Zlseren AI's optimized neural engine",
+    descriptionZh: "使用 Zlseren AI 优化的神经引擎在 0.8 秒内创建",
     image: "/mountain-landscape.png",
   },
   {
     titleEn: "Instant Garden Creation",
     titleZh: "即时花园创作",
-    descriptionEn: "Complex scene rendered in milliseconds using Nano Banana technology",
-    descriptionZh: "使用 Nano Banana 技术在毫秒内渲染复杂场景",
+    descriptionEn: "Complex scene rendered in milliseconds using Zlseren AI technology",
+    descriptionZh: "使用 Zlseren AI 技术在毫秒内渲染复杂场景",
     image: "/beautiful-garden-with-colorful-flowers.jpg",
   },
   {
     titleEn: "Real-time Beach Synthesis",
     titleZh: "实时海滩合成",
-    descriptionEn: "Nano Banana delivers photorealistic results at lightning speed",
-    descriptionZh: "Nano Banana 以闪电般的速度呈现逼真的效果",
+    descriptionEn: "Zlseren AI delivers photorealistic results at lightning speed",
+    descriptionZh: "Zlseren AI 以闪电般的速度呈现逼真的效果",
     image: "/tropical-beach-with-crystal-clear-water.jpg",
   },
   {
     titleEn: "Rapid Aurora Generation",
     titleZh: "快速极光生成",
-    descriptionEn: "Advanced effects processed instantly with Nano Banana AI",
-    descriptionZh: "使用 Nano Banana AI 即时处理高级效果",
+    descriptionEn: "Advanced effects processed instantly with Zlseren AI",
+    descriptionZh: "使用 Zlseren AI 即时处理高级效果",
     image: "/northern-lights-aurora-borealis-over-snowy-landsca.jpg",
   },
-]
+];
 
 export function ShowcaseSection() {
   const { locale, t } = useLocale()
