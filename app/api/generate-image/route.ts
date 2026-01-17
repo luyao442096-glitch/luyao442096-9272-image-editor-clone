@@ -17,9 +17,14 @@ const openai = new OpenAI({
 export async function POST(request: NextRequest) {
   try {
     // ------------------------------------------------------------------
-    // 1. 初始化 Supabase (普通用户模式) - 用于验证登录
+    // 1. 初始化 Supabase (普通用户模式) - 修复 Next.js 15 兼容性问题
     // ------------------------------------------------------------------
-    const supabase = createRouteHandlerClient({ cookies })
+    const cookieStore = await cookies() // 关键修改：手动 await 获取 cookies
+    
+    const supabase = createRouteHandlerClient({ 
+      cookies: () => cookieStore 
+    })
+    
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
     if (authError || !user) {
@@ -28,19 +33,18 @@ export async function POST(request: NextRequest) {
 
     // ------------------------------------------------------------------
     // 2. 初始化 Supabase (上帝模式) - 专门用于扣费！
-    // ⚠️ 放在函数内部初始化，确保能读到 Vercel 的环境变量
     // ------------------------------------------------------------------
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
       console.error("❌ 严重错误: 缺少 Supabase 环境变量")
-      // 可以在这里返回错误，或者继续尝试
+      return NextResponse.json({ error: "Server Configuration Error" }, { status: 500 })
     }
 
     const supabaseAdmin = createClient(
-      supabaseUrl!,
-      supabaseServiceKey!,
+      supabaseUrl,
+      supabaseServiceKey,
       {
         auth: {
           autoRefreshToken: false,
@@ -50,7 +54,7 @@ export async function POST(request: NextRequest) {
     )
 
     // ------------------------------------------------------------------
-    // 3. 检查积分 (使用上帝模式查，更稳)
+    // 3. 检查积分
     // ------------------------------------------------------------------
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
@@ -66,7 +70,7 @@ export async function POST(request: NextRequest) {
     const currentCredits = profile.credits ?? 0
     console.log(`👤 用户 ${user.email} 当前积分: ${currentCredits}`)
 
-    if (currentCredits < 1) { // 如果你想扣2分，这里改成 < 2
+    if (currentCredits < 1) { 
       return NextResponse.json(
         { error: "Insufficient credits", details: "积分不足" },
         { status: 403 }
@@ -74,16 +78,14 @@ export async function POST(request: NextRequest) {
     }
 
     // ------------------------------------------------------------------
-    // 4. 执行生成逻辑 (Gemini)
+    // 4. 执行生成逻辑
     // ------------------------------------------------------------------
     const body = await request.json()
     const { prompt, mode, imageUrl, aspectRatio = "1:1" } = body
 
-    // ... (保留你原本的 Gemini API 调用逻辑) ...
-    // 为了防止代码太长被截断，我这里简化了中间的 API 调用
-    // ⚠️ 请确保这里是你真实的 Gemini 调用代码！
-    
-    // --- 模拟调用开始 (请用你的真实代码替换) ---
+    // ---------------------------------------
+    // 这里是你真实的 Gemini 调用逻辑 (模拟)
+    // ---------------------------------------
     const aspectRatioMap: Record<string, string> = { "1:1": "1:1", "auto": "1:1" }
     const geminiAspectRatio = aspectRatioMap[aspectRatio] || "1:1"
     const messageContent: any[] = []
@@ -96,7 +98,7 @@ export async function POST(request: NextRequest) {
       image_config: { aspect_ratio: geminiAspectRatio },
     }
     
-    // 真实调用
+    // 调用 API
     const completion = await openai.chat.completions.create(requestParams as any)
     const message = completion.choices[0]?.message as any
     let generatedImageUrl = ""
@@ -106,24 +108,21 @@ export async function POST(request: NextRequest) {
        if (img) generatedImageUrl = img.image_url.url
     }
     if (!generatedImageUrl) throw new Error("API 生成失败")
-    // --- 模拟调用结束 ---
+    // ---------------------------------------
 
 
     // ------------------------------------------------------------------
-    // 5. 扣除积分 (关键步骤)
+    // 5. 扣除积分
     // ------------------------------------------------------------------
-    const COST_PER_IMAGE = 1; // 每次扣除 1 积分
+    const COST_PER_IMAGE = 1; 
 
-    const { data: updateData, error: updateError } = await supabaseAdmin
+    const { error: updateError } = await supabaseAdmin
       .from('profiles')
       .update({ credits: currentCredits - COST_PER_IMAGE })
       .eq('id', user.id)
-      .select() // 加上 .select() 可以让我们看到更新后的结果
 
     if (updateError) {
       console.error("❌ 扣费失败报错:", updateError)
-      // 即使扣费失败，因为图片已经生成了，我们还是返回图片给用户
-      // 但会在后台记录这个严重错误
     } else {
       console.log(`✅ 扣费成功! 剩余积分: ${currentCredits - COST_PER_IMAGE}`)
     }
@@ -131,8 +130,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       imageUrl: generatedImageUrl,
-      remainingCredits: currentCredits - COST_PER_IMAGE,
-      debugUpdateError: updateError ? updateError.message : null // 方便在前端调试看到错误
+      remainingCredits: currentCredits - COST_PER_IMAGE
     })
 
   } catch (error: any) {
