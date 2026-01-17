@@ -98,46 +98,26 @@ export function PricingSection() {
   const { user } = useAuth()
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly")
 
-  const handleSubscribe = async (planId: string) => {
+  const handleSubscribe = (planId: string) => {
     if (!user) {
       window.location.href = `/login?redirect=/pricing`
       return
     }
 
-    try {
-      const response = await fetch("/api/creem/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          planId,
-          billingPeriod,
-        }),
-      })
+    // 直接使用用户提供的支付链接
+    const paymentLinks: Record<string, string> = {
+      "basic": "https://www.creem.io/payment/prod_2U14J3cNweMcQPQaQiTHTt",
+      "pro": "https://www.creem.io/payment/prod_3GUDoBE0DSES3HGqYDC1S",
+      "max": "https://www.creem.io/payment/prod_42aqCZ9KQG1nScBkhK6m10",
+    }
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        const errorMessage = data.error || "Failed to create checkout session"
-        console.error("Checkout API error:", {
-          status: response.status,
-          error: data.error,
-          details: data.details,
-        })
-        throw new Error(errorMessage)
-      }
-
-      // Redirect to Creem checkout
-      if (data.checkoutUrl) {
-        window.location.href = data.checkoutUrl
-      } else {
-        throw new Error("No checkout URL received from server")
-      }
-    } catch (error) {
-      console.error("Checkout error:", error)
-      const errorMessage = error instanceof Error ? error.message : (t.checkoutError || "Failed to start checkout. Please try again.")
-      alert(errorMessage)
+    const checkoutUrl = paymentLinks[planId]
+    if (checkoutUrl) {
+      // 直接重定向到Creem支付页面
+      window.location.href = checkoutUrl
+    } else {
+      console.error("Invalid plan ID:", planId)
+      alert("Invalid plan selected. Please try again.")
     }
   }
 

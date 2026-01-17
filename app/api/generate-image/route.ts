@@ -168,7 +168,6 @@ export async function POST(request: NextRequest) {
     // ==========================================
     // 4. 扣除积分 (每次生成扣除2分)
     // ==========================================
-    const CREDITS_PER_GENERATION = 2
     const { error: updateError } = await supabaseAdmin
       .from('profiles')
       .update({ credits: currentCredits - CREDITS_PER_GENERATION })
