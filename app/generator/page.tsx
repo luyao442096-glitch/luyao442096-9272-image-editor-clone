@@ -13,7 +13,7 @@ import { ImageIcon, Sparkles, X, Plus, Download, ChevronDown, Home, Lightbulb, C
 import { Header } from "@/components/header"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { createClient } from "@/lib/supabase/client"
 
 // 类型定义
 type EditorMode = "image-to-image" | "text-to-image"
@@ -34,7 +34,7 @@ const GENERATION_COUNTS = [{ value: "1", label: "1" }, { value: "2", label: "2" 
 export default function GeneratorPage() {
   const { t } = useLocale()
   const { user } = useAuth()
-  const supabase = createClientComponentClient()
+  const supabase = createClient()
 
   const [mode, setMode] = useState<EditorMode>("image-to-image")
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
