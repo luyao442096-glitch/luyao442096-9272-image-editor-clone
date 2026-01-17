@@ -13,7 +13,7 @@ import { ImageIcon, Sparkles, X, Plus, Download, ChevronDown, Home, Lightbulb, C
 import { Header } from "@/components/header"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
-// 1. 引入 Supabase 客户端构建函数
+// ⚠️ 修改 1：引入 Supabase 客户端
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 type EditorMode = "image-to-image" | "text-to-image"
@@ -52,19 +52,13 @@ const GENERATION_COUNTS = [
   { value: "4", label: "4" },
 ]
 
-const SAMPLE_IMAGES = [
-  "/beautiful-garden-with-colorful-flowers.jpg",
-  "/tropical-beach-with-crystal-clear-water.jpg",
-  "/mountain-landscape.png",
-  "/ai-generated-image-based-on-prompt.jpg",
-]
-
 export default function GeneratorPage() {
   const { t } = useLocale()
   const { user } = useAuth()
-  // 2. 初始化 Supabase 客户端
-  const supabase = createClientComponentClient()
   
+  // ⚠️ 修改 2：初始化 Supabase
+  const supabase = createClientComponentClient()
+
   const [mode, setMode] = useState<EditorMode>("image-to-image")
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [prompt, setPrompt] = useState("")
@@ -128,9 +122,14 @@ export default function GeneratorPage() {
     setIsGenerating(true)
 
     try {
-      // 3. 获取当前的 Session Token (这就是解决 401 的关键！)
+      // ⚠️ 修改 3：获取 Token (这是最关键的一步！)
       const { data: { session } } = await supabase.auth.getSession()
       const token = session?.access_token
+
+      // 简单检查一下，如果没有 token 说明真没登录
+      if (!token && !user) {
+         throw new Error("请先登录再使用")
+      }
 
       const count = Number.parseInt(generationCount)
       const newImages: GeneratedImage[] = []
@@ -139,16 +138,6 @@ export default function GeneratorPage() {
       for (let i = 0; i < count; i++) {
         try {
           console.log(`开始生成图片 ${i + 1}/${count}...`)
-          console.log("生成参数:", {
-            mode,
-            hasPrompt: !!prompt,
-            promptLength: prompt.length,
-            hasUploadedImages: uploadedImages.length > 0,
-            imageUrlLength: mode === "image-to-image" && uploadedImages.length > 0 
-              ? uploadedImages[0].url?.length 
-              : 0,
-            aspectRatio,
-          })
           
           const requestBody = {
             prompt,
@@ -159,16 +148,11 @@ export default function GeneratorPage() {
             aspectRatio,
           }
           
-          console.log("请求体大小:", JSON.stringify(requestBody).length, "bytes")
-          if (mode === "image-to-image" && requestBody.imageUrl) {
-            console.log("图片 URL 前100字符:", requestBody.imageUrl.substring(0, 100))
-          }
-          
           const response = await fetch("/api/generate-image", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              // 4. 手动携带 Token (递交身份证)
+              // ⚠️ 修改 4：在这里把 Token 塞进去 (递交身份证)
               ...(token ? { "Authorization": `Bearer ${token}` } : {}),
             },
             body: JSON.stringify(requestBody),
@@ -179,7 +163,6 @@ export default function GeneratorPage() {
           let data: any
           try {
             const text = await response.text()
-            console.log("API 响应内容 (前500字符):", text.substring(0, 500))
             data = JSON.parse(text)
           } catch (parseError) {
             console.error("解析响应 JSON 失败:", parseError)
@@ -189,11 +172,8 @@ export default function GeneratorPage() {
           if (!response.ok) {
             const errorMsg = data.error || data.message || "Failed to generate image"
             const details = data.details ? `\n详细信息: ${data.details}` : ""
-            const suggestion = data.suggestion ? `\n建议: ${data.suggestion}` : ""
-            const fullError = `${errorMsg}${details}${suggestion}`
-            console.error("API 返回错误:", fullError)
-            console.error("完整错误数据:", data)
-            throw new Error(fullError)
+            console.error("API 返回错误:", errorMsg)
+            throw new Error(`${errorMsg}${details}`)
           }
 
           if (data.success && data.imageUrl) {
@@ -204,53 +184,21 @@ export default function GeneratorPage() {
               prompt,
             })
           } else {
-            console.error("Unexpected response format:", data)
-            throw new Error(data.error || "图片生成失败：API返回格式不正确")
+            throw new Error(data.error || "图片生成失败")
           }
         } catch (error: any) {
           console.error(`生成图片 ${i + 1} 时出错:`, error)
-          console.error("错误堆栈:", error.stack)
-          
-          // Only show error for first image
+          // 只有第一张出错时才弹窗，避免循环弹窗
           if (i === 0) {
-            const errorMsg = error.message || "未知错误"
-            let fullErrorMsg = `图片生成失败: ${errorMsg}`
-            
-            // Add more context based on error type
-            if (errorMsg.includes("网络连接失败") || errorMsg.includes("fetch failed") || errorMsg.includes("Failed to fetch")) {
-              fullErrorMsg += `\n\n可能的原因：\n1. 网络连接问题\n2. OpenRouter API 无法访问\n3. 防火墙或代理设置\n4. API 服务暂时不可用\n\n建议：\n- 检查网络连接\n- 查看浏览器控制台和服务器日志获取更多信息\n- 确认 .env.local 文件中的 API key 正确\n- 确认已重启开发服务器\n- 稍后重试`
-            } else if (errorMsg.includes("超时") || errorMsg.includes("timeout")) {
-              fullErrorMsg += `\n\n请求超时，可能是：\n1. 网络速度较慢\n2. API 服务器响应慢\n3. 模型正在加载中\n\n建议：稍后重试`
-            } else if (errorMsg.includes("API 密钥") || errorMsg.includes("401") || errorMsg.includes("unauthorized")) {
-              fullErrorMsg += `\n\n认证失败：\n1. 您的登录可能已过期，请尝试重新登录\n2. 如果问题持续，请联系管理员`
-            } else if (errorMsg.includes("速率限制") || errorMsg.includes("429") || errorMsg.includes("rate limit")) {
-              fullErrorMsg += `\n\n请求过于频繁，请稍后重试`
-            } else if (errorMsg.includes("未找到图片数据") || errorMsg.includes("响应格式")) {
-              fullErrorMsg += `\n\nAPI 响应格式异常：\n1. 请查看服务器终端日志了解详细信息\n2. 可能是 API 参数配置问题\n3. 请检查 OpenRouter API 文档`
-            }
-            
-            // Show detailed error in alert
-            alert(fullErrorMsg)
-            
-            // Also log to console for debugging
-            console.error("完整错误信息:", {
-              message: error.message,
-              stack: error.stack,
-              response: error.response,
-            })
+             alert(`生成失败: ${error.message}`)
           }
-          
-          if (count === 1) {
-            throw error
-          }
+          if (count === 1) throw error
         }
       }
 
       setGeneratedImages((prev) => [...newImages, ...prev])
     } catch (error: any) {
       console.error("Generation error:", error)
-      // alert(error.message || "生成图片时出错，请稍后重试") 
-      // Commented out to avoid double alerting since we handle it inside loop
     } finally {
       setIsGenerating(false)
     }
