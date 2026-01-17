@@ -9,7 +9,7 @@ export function HeroSection() {
   const { t } = useLocale()
 
   return (
-    <section className="relative pt-44 pb-20 overflow-hidden">
+    <section className="relative pt-44 pb-20 overflow-hidden bg-gradient-to-br from-background via-banana-100/30 to-background">
       {/* Banana decorations */}
       <BananaDecoration className="absolute top-32 left-8 w-16 h-16 rotate-[-30deg] opacity-60" />
       <BananaDecoration className="absolute top-48 right-12 w-20 h-20 rotate-[25deg] opacity-50" />

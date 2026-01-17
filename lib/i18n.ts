@@ -14,9 +14,9 @@ export const translations = {
     generator: "Generator",
 
     // Hero
-    heroTitle: "AI Natural Language Image Editor",
+    heroTitle: "释放 AI 的力量，按需付费，无需订阅",
     heroSubtitle:
-      "Transform any image with simple text prompts. Advanced AI-powered editing with character consistency.",
+      "Zlseren AI 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。",
     getStarted: "Get Started",
     viewShowcase: "View Showcase",
 
@@ -132,8 +132,8 @@ export const translations = {
     generator: "生成器",
 
     // Hero
-    heroTitle: "AI自然语言图片编辑器",
-    heroSubtitle: "使用简单的文字提示转换任何图像。先进的AI驱动编辑，保持角色一致性。",
+    heroTitle: "释放 AI 的力量，按需付费，无需订阅",
+    heroSubtitle: "Zlseren AI 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。",
     getStarted: "开始使用",
     viewShowcase: "查看案例",
 

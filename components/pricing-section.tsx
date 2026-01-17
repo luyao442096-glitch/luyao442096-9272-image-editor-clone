@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, Zap, Crown, Sparkles } from "lucide-react"
+import { Check, Zap, Crown, Sparkles, Spinner } from "lucide-react"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
 import { BananaDecoration } from "@/components/banana-decoration"
@@ -97,6 +97,7 @@ export function PricingSection() {
   const { locale, t } = useLocale()
   const { user } = useAuth()
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly")
+  const [loading, setLoading] = useState(false)
 
   const handleSubscribe = (planId: string) => {
     if (!user) {
@@ -113,6 +114,8 @@ export function PricingSection() {
 
     const checkoutUrl = paymentLinks[planId]
     if (checkoutUrl) {
+      // 设置加载状态
+      setLoading(true)
       // 直接重定向到Creem支付页面
       window.location.href = checkoutUrl
     } else {
@@ -185,8 +188,8 @@ export function PricingSection() {
                   </div>
                   <CardDescription className="text-base">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-foreground">${price}</span>
-                      <span className="text-muted-foreground">/{billingPeriod === "monthly" ? t.month : t.year}</span>
+                      <span className="text-4xl font-bold text-foreground">${price}</span>
+                      <span className="text-sm text-muted-foreground">/{billingPeriod === "monthly" ? t.month : t.year}</span>
                     </div>
                     <div className="mt-2 text-sm">
                       {plan.creditsPerYear.toLocaleString()} {t.creditsPerYear} ({plan.imagesPerMonth} {t.highQualityImagesPerMonth})
@@ -206,14 +209,21 @@ export function PricingSection() {
                 <CardFooter>
                   <Button
                     onClick={() => handleSubscribe(plan.id)}
-                    className={`w-full ${
-                      plan.popular
-                        ? "bg-banana text-accent-foreground hover:bg-banana-dark"
-                        : "bg-primary text-primary-foreground hover:bg-primary/90"
-                    }`}
+                    className={`w-full ${plan.popular
+                      ? "bg-banana text-accent-foreground hover:bg-banana-dark"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"}
+                    `}
                     size="lg"
+                    disabled={loading}
                   >
-                    {t.subscribeNow}
+                    {loading ? (
+                      <>
+                        <Spinner className="mr-2 h-4 w-4 animate-spin" />
+                        {t.subscribeNow}
+                      </>
+                    ) : (
+                      t.subscribeNow
+                    )}
                   </Button>
                 </CardFooter>
               </Card>
