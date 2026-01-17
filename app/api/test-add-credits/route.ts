@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { credits = 2400, productId = "prod_2U14J3cNweMcQPQaQiTHTt" } = body;
 
-    // 查找用户 - 优先使用真实用户ID，如果找不到则使用测试用户ID
+    // 查找用户 - 只查找指定的用户ID
     let profile, findError;
     ({ data: profile, error: findError } = await supabase
       .from("profiles")
@@ -48,18 +48,8 @@ export async function POST(request: NextRequest) {
       .eq("id", userId)
       .single());
 
-    // 如果找不到用户，尝试查找第一个用户（用于测试）
     if (findError || !profile) {
-      console.warn(`⚠️ 没找到用户ID ${userId}，尝试查找第一个用户...`);
-      ({ data: profile, error: findError } = await supabase
-        .from("profiles")
-        .select("*")
-        .limit(1)
-        .single());
-    }
-
-    if (findError || !profile) {
-      console.error(`❌ 数据库里没找到用户`, findError);
+      console.error(`❌ 数据库里没找到用户ID ${userId}`, findError);
       return NextResponse.json({ error: "User not found" }, { status: 400 });
     }
 
