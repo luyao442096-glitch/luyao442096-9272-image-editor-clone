@@ -62,7 +62,7 @@ export function ShowcaseSection() {
               <div className="aspect-video relative overflow-hidden">
                 <Image
                   src={item.image || "/placeholder.svg"}
-                  alt={locale === "zh" ? item.titleZh : item.titleEn}
+                  alt={`Zlseren AI ${locale === "zh" ? item.titleZh : item.titleEn}`}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                   sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
@@ -70,7 +70,7 @@ export function ShowcaseSection() {
                 />
                 <div className="absolute top-3 left-3">
                   <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                    🍌 Nano Banana Speed
+                    ⚡ Zlseren AI Speed
                   </span>
                 </div>
               </div>
@@ -87,7 +87,7 @@ export function ShowcaseSection() {
         {/* CTA */}
         <div className="text-center">
           <p className="text-muted-foreground mb-4">
-            {locale === "zh" ? "亲自体验 Nano Banana 的强大功能" : "Experience the power of Nano Banana yourself"}
+            {locale === "zh" ? "亲自体验 Zlseren AI 的强大功能" : "Experience the power of Zlseren AI yourself"}
           </p>
           <Button size="lg" className="bg-banana text-accent-foreground hover:bg-banana-dark" asChild>
             <Link href="/generator">
