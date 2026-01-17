@@ -140,12 +140,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
 
-    // Fallback: if we have profile data but no error, return it
-    if (profile) {
-      console.log('✅ 使用已获取的 profile 数据，积分:', profile.credits);
-      return profile;
-    }
-
     console.warn('⚠️ 未获取到 profile 数据，返回 null');
     return null;
   }, [supabase]);
