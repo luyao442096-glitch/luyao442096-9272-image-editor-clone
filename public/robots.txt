@@ -1,0 +1,16 @@
+# robots.txt for Nano Banana - AI Image Editor
+# https://www.zlseren.online/
+
+User-agent: *
+Allow: /
+
+# Block admin and test routes
+Disallow: /api/test-add-credits/
+Disallow: /api/auth/
+Disallow: /api/creem/test-api-key/
+
+# Block internal pages that shouldn't be indexed
+Disallow: /auth/
+
+# XML sitemap
+Sitemap: https://www.zlseren.online/sitemap.xml

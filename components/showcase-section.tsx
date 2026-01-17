@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { BananaDecoration } from "@/components/banana-decoration"
 import Link from "next/link"
+import Image from "next/image"
 import { useLocale } from "@/lib/locale-context"
 
 const showcaseItems = [
@@ -59,10 +60,13 @@ export function ShowcaseSection() {
           {showcaseItems.map((item) => (
             <Card key={item.titleEn} className="overflow-hidden group cursor-pointer bg-card">
               <div className="aspect-video relative overflow-hidden">
-                <img
+                <Image
                   src={item.image || "/placeholder.svg"}
                   alt={locale === "zh" ? item.titleZh : item.titleEn}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  priority={item === showcaseItems[0]}
                 />
                 <div className="absolute top-3 left-3">
                   <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">

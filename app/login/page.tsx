@@ -1,9 +1,35 @@
 'use client';
 
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 // 确保这个路径与您实际的项目结构一致，如果报错找不到组件，请检查这里
-import GoogleLoginButton from '@/components/google-login-button'; 
+import GoogleLoginButton from '@/components/google-login-button';
+
+// 登录页面特定的元数据
+export const metadata: Metadata = {
+  title: "Login - Nano Banana AI Image Editor",
+  description: "Login to your Nano Banana account to access AI image editing features and manage your credits.",
+  keywords: [
+    "Nano Banana Login",
+    "AI Image Editor Login",
+    "Nano Banana Account",
+    "AI Editor Login",
+    "Nano Banana Sign In"
+  ],
+  openGraph: {
+    title: "Login - Nano Banana AI Image Editor",
+    description: "Login to your Nano Banana account to access AI image editing features and manage your credits.",
+    url: "https://www.zlseren.online/login"
+  },
+  twitter: {
+    title: "Login - Nano Banana AI Image Editor",
+    description: "Login to your Nano Banana account to access AI image editing features and manage your credits.",
+  },
+  alternates: {
+    canonical: "https://www.zlseren.online/login"
+  }
+}; 
 
 // 1. 创建一个内部组件专门处理搜索参数（useSearchParams）
 function LoginContent() {

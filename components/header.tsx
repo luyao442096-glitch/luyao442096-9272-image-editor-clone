@@ -83,12 +83,22 @@ export function Header() {
           </Link>
 
           {/* ...Nav Links... */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/generator" className="..."> {t.generator} </Link>
-            <Link href="/#features" className="..."> {t.features} </Link>
-            <Link href="/#showcase" className="..."> {t.showcase} </Link>
-            <Link href="/pricing" className="..."> {t.pricing} </Link>
-            <Link href="/#faq" className="..."> {t.faq} </Link>
+          <nav className="hidden md:flex items-center gap-8" aria-label="Main Navigation">
+            <Link href="/generator" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              {t.generator}
+            </Link>
+            <Link href="/#features" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              {t.features}
+            </Link>
+            <Link href="/#showcase" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              {t.showcase}
+            </Link>
+            <Link href="/pricing" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              {t.pricing}
+            </Link>
+            <Link href="/#faq" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              {t.faq}
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3">

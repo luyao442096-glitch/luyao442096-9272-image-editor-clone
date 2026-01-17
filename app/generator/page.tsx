@@ -1,6 +1,33 @@
 "use client"
 
+import { Metadata } from "next"
 import type React from "react"
+
+// 生成器页面特定的元数据
+export const metadata: Metadata = {
+  title: "Generator - Nano Banana AI Image Editor",
+  description: "Transform any image with simple text prompts. Advanced AI-powered image editing with character consistency and scene preservation.",
+  keywords: [
+    "AI Image Generator",
+    "Nano Banana Generator",
+    "Image to Image",
+    "Text to Image",
+    "AI Image Editing",
+    "Image Generation"
+  ],
+  openGraph: {
+    title: "Generator - Nano Banana AI Image Editor",
+    description: "Transform any image with simple text prompts. Advanced AI-powered image editing with character consistency and scene preservation.",
+    url: "https://www.zlseren.online/generator"
+  },
+  twitter: {
+    title: "Generator - Nano Banana AI Image Editor",
+    description: "Transform any image with simple text prompts. Advanced AI-powered image editing with character consistency and scene preservation.",
+  },
+  alternates: {
+    canonical: "https://www.zlseren.online/generator"
+  }
+}
 import { useState, useCallback } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
