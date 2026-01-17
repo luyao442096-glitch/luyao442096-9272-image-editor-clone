@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
 import { createClient } from "@supabase/supabase-js"
+import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 
@@ -31,9 +32,18 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: { autoRefreshToken: false, persistSession: false }
-    })
+    const cookieStore = await cookies()
+    // 使用服务角色密钥创建客户端，用于验证用户身份
+    const supabaseAdmin = createClient(
+      supabaseUrl, 
+      supabaseServiceKey,
+      {
+        auth: {
+          persistSession: false,
+          autoRefreshToken: false
+        }
+      }
+    )
 
     // ==========================================
     // 1. 身份验证 (使用 Service Role 验证 Token)
@@ -58,18 +68,27 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 如果 Header 失败，尝试 Cookie (兼容旧版)
+    // 如果 Header 失败，尝试从会话获取用户信息 (简化版)
     if (!user) {
       try {
-        const cookieStore = await cookies();
-        const supabaseCookie = createRouteHandlerClient({ cookies: () => cookieStore as any });
-        const { data: { session } } = await supabaseCookie.auth.getSession();
+        // 直接使用服务器端客户端获取当前会话
+        const serverClient = createServerClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!,
+          { cookies: { getAll: () => cookieStore.getAll() } }
+        );
+        
+        const { data: { session } } = await serverClient.auth.getSession();
+        
         if (session?.user) {
           user = session.user;
-          console.log(`✅ Cookie 验证成功: ${user.email}`);
+          console.log(`✅ Session 验证成功: ${user.email}`);
+        } else {
+          authErrorDetail = "会话已过期或无效";
         }
-      } catch (e) {
-        // Cookie 验证也失败，无需处理
+      } catch (e: any) {
+        console.error(`⚠️ Session 验证失败: ${e.message}`);
+        authErrorDetail = "会话验证失败";
       }
     }
 
@@ -104,8 +123,15 @@ export async function POST(request: NextRequest) {
     // ⚠️ 关键修复：读取前端传来的 model 参数
     const { prompt, mode, imageUrl, aspectRatio = "1:1", model } = body
 
-    // 如果前端没传 model，使用默认值
-    const targetModel = model || "google/gemini-2.5-flash-image";
+    // 模型映射：将前端显示名称转换为 OpenRouter 完整模型 ID
+    const modelMap: Record<string, string> = {
+      "nano-banana": "google/gemini-2.5-flash-image",
+      "nano-banana-pro": "google/gemini-2.5-flash-image", // 可以根据需要修改为不同的模型
+      "seedream-4": "google/gemini-2.5-flash-image" // 可以根据需要修改为不同的模型
+    };
+
+    // 解析并验证模型
+    const targetModel = model && modelMap[model] ? modelMap[model] : "google/gemini-2.5-flash-image";
     console.log(`🚀 开始生成... 模型: ${targetModel}, 用户: ${user.email}`);
 
     const aspectRatioMap: Record<string, string> = { "1:1": "1:1", "auto": "1:1" }
