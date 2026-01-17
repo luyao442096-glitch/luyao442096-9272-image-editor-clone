@@ -13,7 +13,7 @@ import { ImageIcon, Sparkles, X, Plus, Download, ChevronDown, Home, Lightbulb, C
 import { Header } from "@/components/header"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
-// 引入 Supabase 客户端
+// 1. 引入 Supabase 客户端构建函数
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 type EditorMode = "image-to-image" | "text-to-image"
@@ -52,13 +52,19 @@ const GENERATION_COUNTS = [
   { value: "4", label: "4" },
 ]
 
+const SAMPLE_IMAGES = [
+  "/beautiful-garden-with-colorful-flowers.jpg",
+  "/tropical-beach-with-crystal-clear-water.jpg",
+  "/mountain-landscape.png",
+  "/ai-generated-image-based-on-prompt.jpg",
+]
+
 export default function GeneratorPage() {
   const { t } = useLocale()
   const { user } = useAuth()
-  
-  // 初始化 Supabase
+  // 2. 初始化 Supabase 客户端
   const supabase = createClientComponentClient()
-
+  
   const [mode, setMode] = useState<EditorMode>("image-to-image")
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([])
   const [prompt, setPrompt] = useState("")
@@ -76,7 +82,7 @@ export default function GeneratorPage() {
   const [analysisPrompt, setAnalysisPrompt] = useState("What is in this image?")
 
   const MAX_IMAGES = 9
-  const MAX_FILE_SIZE = 10 * 1024 * 1024 
+  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
   const CREDITS_PER_GENERATION = 2
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -88,15 +94,17 @@ export default function GeneratorPage() {
 
   const handleFiles = (files: File[]) => {
     const imageFiles = files.filter((file) => file.type.startsWith("image/") && file.size <= MAX_FILE_SIZE)
+
     imageFiles.forEach((file) => {
       if (uploadedImages.length < MAX_IMAGES) {
         const reader = new FileReader()
         reader.onload = (e) => {
-          setUploadedImages((prev) => (prev.length < MAX_IMAGES ? [...prev, {
+          const newImage: UploadedImage = {
             id: crypto.randomUUID(),
             url: e.target?.result as string,
             name: file.name,
-          }] : prev))
+          }
+          setUploadedImages((prev) => (prev.length < MAX_IMAGES ? [...prev, newImage] : prev))
         }
         reader.readAsDataURL(file)
       }
@@ -112,7 +120,6 @@ export default function GeneratorPage() {
     setUploadedImages((prev) => prev.filter((img) => img.id !== id))
   }
 
-  // --- 核心修复区域 ---
   const handleGenerate = async () => {
     if ((mode === "image-to-image" && uploadedImages.length === 0) || !prompt.trim()) {
       return
@@ -121,25 +128,27 @@ export default function GeneratorPage() {
     setIsGenerating(true)
 
     try {
-      // 1. 获取最新 Token (强制刷新)
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
-      if (sessionError || !session || !session.access_token) {
-         // 如果没 Token，说明登录彻底过期了
-         alert("⚠️ 登录已过期，请点击右上角【退出】后重新登录！")
-         setIsGenerating(false)
-         return
-      }
-
-      const token = session.access_token
-      console.log("✅ 正在使用 Token 发起请求...")
+      // 3. 获取当前的 Session Token (这就是解决 401 的关键！)
+      const { data: { session } } = await supabase.auth.getSession()
+      const token = session?.access_token
 
       const count = Number.parseInt(generationCount)
       const newImages: GeneratedImage[] = []
 
+      // Generate images based on count
       for (let i = 0; i < count; i++) {
         try {
           console.log(`开始生成图片 ${i + 1}/${count}...`)
+          console.log("生成参数:", {
+            mode,
+            hasPrompt: !!prompt,
+            promptLength: prompt.length,
+            hasUploadedImages: uploadedImages.length > 0,
+            imageUrlLength: mode === "image-to-image" && uploadedImages.length > 0 
+              ? uploadedImages[0].url?.length 
+              : 0,
+            aspectRatio,
+          })
           
           const requestBody = {
             prompt,
@@ -148,54 +157,100 @@ export default function GeneratorPage() {
               ? uploadedImages[0].url 
               : undefined,
             aspectRatio,
-            // ✅ 修复：把大模型参数加回来了！
-            model: selectedModel 
+          }
+          
+          console.log("请求体大小:", JSON.stringify(requestBody).length, "bytes")
+          if (mode === "image-to-image" && requestBody.imageUrl) {
+            console.log("图片 URL 前100字符:", requestBody.imageUrl.substring(0, 100))
           }
           
           const response = await fetch("/api/generate-image", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              // ✅ 修复：手动带上 Token
-              "Authorization": `Bearer ${token}` 
+              // 4. 手动携带 Token (递交身份证)
+              ...(token ? { "Authorization": `Bearer ${token}` } : {}),
             },
             body: JSON.stringify(requestBody),
           })
 
+          console.log(`API 响应状态: ${response.status} ${response.statusText}`)
+
           let data: any
           try {
             const text = await response.text()
+            console.log("API 响应内容 (前500字符):", text.substring(0, 500))
             data = JSON.parse(text)
-          } catch (e) {
-            throw new Error(`服务器响应格式错误: ${response.status}`)
+          } catch (parseError) {
+            console.error("解析响应 JSON 失败:", parseError)
+            throw new Error(`服务器返回了无效的响应格式。状态码: ${response.status}`)
           }
 
           if (!response.ok) {
-            // 如果是 401，提示用户去登录
-            if (response.status === 401) {
-                throw new Error("Unauthorized: 您的登录凭证已失效，请退出并重新登录")
-            }
-            throw new Error(data.error || data.message || "生成失败")
+            const errorMsg = data.error || data.message || "Failed to generate image"
+            const details = data.details ? `\n详细信息: ${data.details}` : ""
+            const suggestion = data.suggestion ? `\n建议: ${data.suggestion}` : ""
+            const fullError = `${errorMsg}${details}${suggestion}`
+            console.error("API 返回错误:", fullError)
+            console.error("完整错误数据:", data)
+            throw new Error(fullError)
           }
 
           if (data.success && data.imageUrl) {
+            console.log("图片生成成功!")
             newImages.push({
               id: crypto.randomUUID(),
               url: data.imageUrl,
               prompt,
             })
           } else {
-            throw new Error(data.error || "未返回图片数据")
+            console.error("Unexpected response format:", data)
+            throw new Error(data.error || "图片生成失败：API返回格式不正确")
           }
         } catch (error: any) {
-          console.error(`生成错误:`, error)
-          if (i === 0) alert(`生成失败: ${error.message}`)
-          if (count === 1) throw error
+          console.error(`生成图片 ${i + 1} 时出错:`, error)
+          console.error("错误堆栈:", error.stack)
+          
+          // Only show error for first image
+          if (i === 0) {
+            const errorMsg = error.message || "未知错误"
+            let fullErrorMsg = `图片生成失败: ${errorMsg}`
+            
+            // Add more context based on error type
+            if (errorMsg.includes("网络连接失败") || errorMsg.includes("fetch failed") || errorMsg.includes("Failed to fetch")) {
+              fullErrorMsg += `\n\n可能的原因：\n1. 网络连接问题\n2. OpenRouter API 无法访问\n3. 防火墙或代理设置\n4. API 服务暂时不可用\n\n建议：\n- 检查网络连接\n- 查看浏览器控制台和服务器日志获取更多信息\n- 确认 .env.local 文件中的 API key 正确\n- 确认已重启开发服务器\n- 稍后重试`
+            } else if (errorMsg.includes("超时") || errorMsg.includes("timeout")) {
+              fullErrorMsg += `\n\n请求超时，可能是：\n1. 网络速度较慢\n2. API 服务器响应慢\n3. 模型正在加载中\n\n建议：稍后重试`
+            } else if (errorMsg.includes("API 密钥") || errorMsg.includes("401") || errorMsg.includes("unauthorized")) {
+              fullErrorMsg += `\n\n认证失败：\n1. 您的登录可能已过期，请尝试重新登录\n2. 如果问题持续，请联系管理员`
+            } else if (errorMsg.includes("速率限制") || errorMsg.includes("429") || errorMsg.includes("rate limit")) {
+              fullErrorMsg += `\n\n请求过于频繁，请稍后重试`
+            } else if (errorMsg.includes("未找到图片数据") || errorMsg.includes("响应格式")) {
+              fullErrorMsg += `\n\nAPI 响应格式异常：\n1. 请查看服务器终端日志了解详细信息\n2. 可能是 API 参数配置问题\n3. 请检查 OpenRouter API 文档`
+            }
+            
+            // Show detailed error in alert
+            alert(fullErrorMsg)
+            
+            // Also log to console for debugging
+            console.error("完整错误信息:", {
+              message: error.message,
+              stack: error.stack,
+              response: error.response,
+            })
+          }
+          
+          if (count === 1) {
+            throw error
+          }
         }
       }
+
       setGeneratedImages((prev) => [...newImages, ...prev])
     } catch (error: any) {
-      console.error("Critical error:", error)
+      console.error("Generation error:", error)
+      // alert(error.message || "生成图片时出错，请稍后重试") 
+      // Commented out to avoid double alerting since we handle it inside loop
     } finally {
       setIsGenerating(false)
     }
@@ -204,6 +259,7 @@ export default function GeneratorPage() {
   const downloadImage = async (imageUrl: string, filename: string, imageId?: string) => {
     try {
       if (imageId) setDownloadingId(imageId)
+
       const response = await fetch(imageUrl)
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
@@ -214,38 +270,69 @@ export default function GeneratorPage() {
       a.click()
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
+
       if (imageId) {
         setDownloadedIds((prev) => new Set([...prev, imageId]))
-        setTimeout(() => setDownloadedIds((prev) => {
-            const next = new Set(prev); next.delete(imageId); return next;
-        }), 2000)
+        setTimeout(() => {
+          setDownloadedIds((prev) => {
+            const next = new Set(prev)
+            next.delete(imageId)
+            return next
+          })
+        }, 2000)
       }
-    } catch (error) { console.error(error) } finally { setDownloadingId(null) }
+    } catch (error) {
+      console.error("Download failed:", error)
+    } finally {
+      setDownloadingId(null)
+    }
   }
 
   const downloadAllImages = () => {
     generatedImages.forEach((img, index) => {
-      setTimeout(() => downloadImage(img.url, `nano-banana-${index + 1}.png`), index * 500)
+      setTimeout(() => {
+        downloadImage(img.url, `nano-banana-${index + 1}.png`)
+      }, index * 500)
     })
   }
 
   const analyzeImage = async (imageId: string, imageUrl: string) => {
     if (analyzingId) return
+
     setAnalyzingId(imageId)
     try {
       const response = await fetch("/api/analyze-image", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ imageUrl, prompt: analysisPrompt }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          imageUrl,
+          prompt: analysisPrompt,
+        }),
       })
+
       const data = await response.json()
-      if (!response.ok) throw new Error(data.error)
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to analyze image")
+      }
+
       setAnalyses((prev) => {
         const next = new Map(prev)
-        next.set(imageId, { imageId, analysis: data.analysis, prompt: analysisPrompt })
+        next.set(imageId, {
+          imageId,
+          analysis: data.analysis,
+          prompt: analysisPrompt,
+        })
         return next
       })
-    } catch (error: any) { alert(error.message) } finally { setAnalyzingId(null) }
+    } catch (error: any) {
+      console.error("Analysis error:", error)
+      alert(error.message || "Failed to analyze image")
+    } finally {
+      setAnalyzingId(null)
+    }
   }
 
   return (

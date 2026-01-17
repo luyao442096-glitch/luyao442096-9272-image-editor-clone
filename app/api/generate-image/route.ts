@@ -21,13 +21,13 @@ export async function POST(request: NextRequest) {
     let user = null;
     let authMethod = "none";
 
-    // 方式 A: 尝试从 Header 获取 Token (最稳的方式)
+    // 方式 A: 尝试从 Header 获取 Token (这是解决 401 的关键)
     const authHeader = request.headers.get('Authorization');
     if (authHeader) {
       const token = authHeader.replace('Bearer ', '');
       const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
       const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-      // 创建一个临时客户端来验证 Token
+      
       const supabaseJWT = createClient(supabaseUrl, supabaseAnonKey);
       const { data: { user: headerUser }, error: jwtError } = await supabaseJWT.auth.getUser(token);
       
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 方式 B: 如果 Header 没拿到，尝试从 Cookie 获取 (旧方式)
+    // 方式 B: 如果 Header 没拿到，尝试从 Cookie 获取
     if (!user) {
       try {
         const cookieStore = await cookies();
@@ -83,22 +83,23 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (profileError || !profile) {
-      console.log("Profile not found, user might be new or table is empty");
+      console.log("Profile not found");
       return NextResponse.json({ error: "Account Error", details: "无法读取积分信息" }, { status: 500 });
     }
 
     const currentCredits = profile.credits ?? 0
-    console.log(`👤 用户 [${user.email}] 验证成功 (${authMethod})，当前积分: ${currentCredits}`)
+    console.log(`👤 用户验证成功 (${authMethod})，当前积分: ${currentCredits}`)
 
     if (currentCredits < 1) { 
       return NextResponse.json({ error: "Insufficient credits", details: "积分不足" }, { status: 403 })
     }
 
     // ------------------------------------------------------------------
-    // 4. 执行生成 (Gemini)
+    // 4. 执行生成 (Gemini / AI Model)
     // ------------------------------------------------------------------
     const body = await request.json()
-    const { prompt, mode, imageUrl, aspectRatio = "1:1" } = body
+    // ⚠️ 修复 1：这里加上了 model 参数的读取
+    const { prompt, mode, imageUrl, aspectRatio = "1:1", model } = body
 
     const aspectRatioMap: Record<string, string> = { "1:1": "1:1", "auto": "1:1" }
     const geminiAspectRatio = aspectRatioMap[aspectRatio] || "1:1"
@@ -109,8 +110,12 @@ export async function POST(request: NextRequest) {
     }
     messageContent.push({ type: "text", text: prompt })
     
+    // ⚠️ 修复 2：使用前端传来的 model，如果没传则使用默认的
+    const targetModel = model || "google/gemini-2.5-flash-image";
+    console.log("🤖 使用模型:", targetModel);
+
     const requestParams: any = {
-      model: "google/gemini-2.5-flash-image",
+      model: targetModel, // <--- 这里动态化了
       messages: [{ role: "user", content: messageContent }],
       image_config: { aspect_ratio: geminiAspectRatio },
     }
