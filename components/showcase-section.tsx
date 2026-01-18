@@ -9,32 +9,40 @@ import { useLocale } from "@/lib/locale-context"
 
 const showcaseItems = [
   {
-    titleEn: "Ultra-Fast Mountain Generation",
-    titleZh: "超快速山景生成",
-    descriptionEn: "Created in 0.8 seconds with Zlseren AI's optimized neural engine",
-    descriptionZh: "使用 Zlseren AI 优化的神经引擎在 0.8 秒内创建",
-    image: "/mountain-landscape.png",
+    titleEn: "Intelligent Cleanup: Original",
+    titleZh: "智能清理：原始图像",
+    descriptionEn: "Complex scene with unwanted tourists and cluttered objects.",
+    descriptionZh: "包含多余游客和杂乱物体的复杂场景。",
+    image: "/showcase-cleanup-before.jpg",
+    badgeEn: "Input Image",
+    badgeZh: "输入图像",
   },
   {
-    titleEn: "Instant Garden Creation",
-    titleZh: "即时花园创作",
-    descriptionEn: "Complex scene rendered in milliseconds using Zlseren AI technology",
-    descriptionZh: "使用 Zlseren AI 技术在毫秒内渲染复杂场景",
-    image: "/beautiful-garden-with-colorful-flowers.jpg",
+    titleEn: "Intelligent Cleanup: Processed",
+    titleZh: "智能清理：处理后",
+    descriptionEn: "Distractions removed instantly while perfectly reconstructing the background.",
+    descriptionZh: "瞬间移除干扰物，同时完美重建背景。",
+    image: "/showcase-cleanup-after.jpg",
+    badgeEn: "AI Processed",
+    badgeZh: "AI处理",
   },
   {
-    titleEn: "Real-time Beach Synthesis",
-    titleZh: "实时海滩合成",
-    descriptionEn: "Zlseren AI delivers photorealistic results at lightning speed",
-    descriptionZh: "Zlseren AI 以闪电般的速度呈现逼真的效果",
-    image: "/tropical-beach-with-crystal-clear-water.jpg",
+    titleEn: "Cinematic Concept Art",
+    titleZh: "电影级概念艺术",
+    descriptionEn: "Generate breathtaking 8K sci-fi landscapes from simple text descriptions.",
+    descriptionZh: "从简单的文字描述生成令人惊叹的8K科幻景观。",
+    image: "/showcase-creative-city.jpg",
+    badgeEn: "Text-to-Image",
+    badgeZh: "文生图",
   },
   {
-    titleEn: "Rapid Aurora Generation",
-    titleZh: "快速极光生成",
-    descriptionEn: "Advanced effects processed instantly with Zlseren AI",
-    descriptionZh: "使用 Zlseren AI 即时处理高级效果",
-    image: "/northern-lights-aurora-borealis-over-snowy-landsca.jpg",
+    titleEn: "Photorealistic Product Shots",
+    titleZh: "逼真产品摄影",
+    descriptionEn: "Studio-quality commercial photography generated without a physical camera.",
+    descriptionZh: "无需实体相机即可生成工作室级商业摄影。",
+    image: "/showcase-product-photo.jpg",
+    badgeEn: "Commercial Quality",
+    badgeZh: "商业品质",
   },
 ];
 
@@ -70,7 +78,7 @@ export function ShowcaseSection() {
                 />
                 <div className="absolute top-3 left-3">
                   <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                    ⚡ Zlseren AI Speed
+                    ⚡ {locale === "zh" ? item.badgeZh : item.badgeEn}
                   </span>
                 </div>
               </div>
