@@ -74,7 +74,7 @@ export function ShowcaseSection() {
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/ai-generated-beautiful-garden-with-colorful-flowers.jpg"
+                  src="/beautiful-garden-with-colorful-flowers.jpg"
                   alt="Beautiful Garden with Colorful Flowers"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -136,7 +136,7 @@ export function ShowcaseSection() {
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/ai-generated-northern-lights-aurora-borealis-over-snowy-landscape.jpg"
+                  src="/northern-lights-aurora-borealis-over-snowy-landsca.jpg"
                   alt="Northern Lights Aurora Borealis Over Snowy Landscape"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -167,7 +167,7 @@ export function ShowcaseSection() {
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/ai-generated-tropical-beach-with-crystal-clear-water.jpg"
+                  src="/tropical-beach-with-crystal-clear-water.jpg"
                   alt="Tropical Beach with Crystal Clear Water"
                   className="w-full h-full object-cover"
                   onError={(e) => {
