@@ -138,7 +138,7 @@ export const translations = {
     viewShowcase: "查看案例",
 
     // Generator
-    imageEdit: "图像编辑",
+    imageEdit: "Image Edit",
     textToImage: "文生图",
     transformExisting: "将现有图像转换为新作品",
     generateNew: "从文字描述生成新图像",
