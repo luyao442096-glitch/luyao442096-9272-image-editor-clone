@@ -6,6 +6,12 @@ import { useLocale } from "@/lib/locale-context"
 
 const faqs = [
   {
+    questionEn: "Why choose Zlseren credits instead of a subscription?",
+    questionZh: "为什么选择 Zlseren 积分而不是订阅？",
+    answerEn: "Unlike monthly subscriptions where unused generations are wasted at the end of the month, Zlseren credits never expire. You pay once and use them whenever you need—whether it's today or next year. You get access to our premium, studio-grade AI models without any recurring monthly commitment.",
+    answerZh: "与每月订阅不同，Zlseren 积分永远不会过期。您只需支付一次，随时使用——无论是今天还是明年。您可以使用我们的高级工作室级 AI 模型，无需任何月度订阅承诺。",
+  },
+  {
     questionEn: "Do my credits ever expire?",
     questionZh: "我的积分会过期吗？",
     answerEn: "No! Once you purchase credits, they stay in your account forever until you use them.",
