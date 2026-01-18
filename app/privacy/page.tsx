@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { useLocale } from "@/lib/locale-context"
 import { BananaDecoration } from "@/components/banana-decoration"
 
 export const metadata: Metadata = {
@@ -13,8 +12,6 @@ export const metadata: Metadata = {
 }
 
 export default function PrivacyPage() {
-  const { locale, t } = useLocale()
-
   return (
     <main className="min-h-screen bg-white">
       <Header />
