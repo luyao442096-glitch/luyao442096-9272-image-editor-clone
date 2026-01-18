@@ -68,13 +68,10 @@ export function ShowcaseSection() {
           {showcaseItems.map((item) => (
             <Card key={item.titleEn} className="overflow-hidden group cursor-pointer bg-card">
               <div className="aspect-video relative overflow-hidden">
-                <Image
+                <img
                   src={item.image || "/placeholder.svg"}
                   alt={`Zlseren AI ${locale === "zh" ? item.titleZh : item.titleEn}`}
-                  width={800}
-                  height={450}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  priority={item === showcaseItems[0]}
                 />
                 <div className="absolute top-3 left-3">
                   <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
