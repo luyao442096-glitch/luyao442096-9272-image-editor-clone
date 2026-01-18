@@ -80,7 +80,10 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-background/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-background/50 text-sm">© 2026 Zlseren AI. {t.allRights}</p>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <p className="text-background/50 text-sm">© 2026 Zlseren AI. {t.allRights}</p>
+            <p className="text-background/50 text-sm">Support Email: <a href="mailto:luyao@zlseren.online" className="text-banana hover:underline">luyao@zlseren.online</a></p>
+          </div>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="text-background/50 hover:text-banana transition-colors text-sm">
               Privacy Policy
