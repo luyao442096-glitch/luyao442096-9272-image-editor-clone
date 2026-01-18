@@ -262,7 +262,7 @@ export function EditorSection() {
                 <SelectContent>
                   <SelectItem value="nano-banana">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">✨</span>
+                      <span className="text-lg">⚡</span>
                       <span>Zlseren Basic</span>
                     </div>
                   </SelectItem>
