@@ -69,13 +69,13 @@ export function ShowcaseSection() {
             <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                  ⚡ Garden Scene
+                  ⚡ Cleanup Before
                 </span>
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/beautiful-garden-with-colorful-flowers.jpg"
-                  alt="Beautiful Garden with Colorful Flowers"
+                  src="/showcase-cleanup-before.jpg"
+                  alt="Intelligent Cleanup Original"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     console.error('Image failed to load:', (e.target as HTMLImageElement).src);
@@ -90,9 +90,9 @@ export function ShowcaseSection() {
               </div>
             </div>
             <div className="p-5">
-              <h3 className="font-semibold text-foreground mb-2">Beautiful Garden</h3>
+              <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Original</h3>
               <p className="text-sm text-muted-foreground">
-                AI-generated vibrant garden scene with colorful flowers.
+                Complex scene with unwanted tourists and cluttered objects.
               </p>
             </div>
           </Card>
@@ -100,13 +100,13 @@ export function ShowcaseSection() {
             <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                  ⚡ Mountain Landscape
+                  ⚡ Cleanup After
                 </span>
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/ai-generated-majestic-mountain-landscape-with-snow.jpg"
-                  alt="Majestic Mountain Landscape with Snow"
+                  src="/showcase-cleanup-after.jpg"
+                  alt="Intelligent Cleanup Processed"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     console.error('Image failed to load:', (e.target as HTMLImageElement).src);
@@ -121,9 +121,9 @@ export function ShowcaseSection() {
               </div>
             </div>
             <div className="p-5">
-              <h3 className="font-semibold text-foreground mb-2">Majestic Mountains</h3>
+              <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Processed</h3>
               <p className="text-sm text-muted-foreground">
-                AI-generated stunning mountain landscape with snow-capped peaks.
+                Distractions removed instantly while perfectly reconstructing the background.
               </p>
             </div>
           </Card>
@@ -131,13 +131,13 @@ export function ShowcaseSection() {
             <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                  ⚡ Northern Lights
+                  ⚡ Creative City
                 </span>
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/northern-lights-aurora-borealis-over-snowy-landsca.jpg"
-                  alt="Northern Lights Aurora Borealis Over Snowy Landscape"
+                  src="/showcase-creative-city.jpg"
+                  alt="Cinematic Concept Art"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     console.error('Image failed to load:', (e.target as HTMLImageElement).src);
@@ -152,9 +152,9 @@ export function ShowcaseSection() {
               </div>
             </div>
             <div className="p-5">
-              <h3 className="font-semibold text-foreground mb-2">Aurora Borealis</h3>
+              <h3 className="font-semibold text-foreground mb-2">Cinematic Concept Art</h3>
               <p className="text-sm text-muted-foreground">
-                AI-generated breathtaking northern lights over snowy landscape.
+                Generate breathtaking 8K sci-fi landscapes from simple text descriptions.
               </p>
             </div>
           </Card>
@@ -162,13 +162,13 @@ export function ShowcaseSection() {
             <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                  ⚡ Tropical Beach
+                  ⚡ Product Photo
                 </span>
               </div>
               <div className="w-full h-full">
                 <img
-                  src="/tropical-beach-with-crystal-clear-water.jpg"
-                  alt="Tropical Beach with Crystal Clear Water"
+                  src="/showcase-product-photo.jpg"
+                  alt="Photorealistic Product Shots"
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     console.error('Image failed to load:', (e.target as HTMLImageElement).src);
@@ -183,9 +183,9 @@ export function ShowcaseSection() {
               </div>
             </div>
             <div className="p-5">
-              <h3 className="font-semibold text-foreground mb-2">Tropical Paradise</h3>
+              <h3 className="font-semibold text-foreground mb-2">Photorealistic Product Shots</h3>
               <p className="text-sm text-muted-foreground">
-                AI-generated idyllic tropical beach with crystal clear water.
+                Studio-quality commercial photography generated without a physical camera.
               </p>
             </div>
           </Card>
