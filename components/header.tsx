@@ -79,7 +79,7 @@ export function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2">
              {/* ...Logo... */}
-             <span className="font-bold text-xl text-foreground">Nano Banana</span>
+             <span className="font-bold text-xl text-foreground">Zlseren AI</span>
           </Link>
 
           {/* ...Nav Links... */}
