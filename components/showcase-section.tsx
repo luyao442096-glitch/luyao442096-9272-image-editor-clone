@@ -71,9 +71,9 @@ export function ShowcaseSection() {
                 <Image
                   src={item.image || "/placeholder.svg"}
                   alt={`Zlseren AI ${locale === "zh" ? item.titleZh : item.titleEn}`}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  width={800}
+                  height={450}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   priority={item === showcaseItems[0]}
                 />
                 <div className="absolute top-3 left-3">
