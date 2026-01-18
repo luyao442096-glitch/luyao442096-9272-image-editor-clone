@@ -66,63 +66,91 @@ export function ShowcaseSection() {
         {/* Showcase grid */}
         <div className="grid sm:grid-cols-2 gap-6 mb-12">
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+            <div className="aspect-video relative overflow-hidden">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Input Image
                 </span>
               </div>
-              <div className="text-center p-6">
-                <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Original</h3>
-                <p className="text-sm text-muted-foreground">
-                  Complex scene with unwanted tourists and cluttered objects.
-                </p>
+              <div style={{ width: '100%', height: '100%' }}>
+                <img
+                  src="/showcase-cleanup-before.jpg"
+                  alt="Intelligent Cleanup Original"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
               </div>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Original</h3>
+              <p className="text-sm text-muted-foreground">
+                Complex scene with unwanted tourists and cluttered objects.
+              </p>
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+            <div className="aspect-video relative overflow-hidden">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ AI Processed
                 </span>
               </div>
-              <div className="text-center p-6">
-                <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Processed</h3>
-                <p className="text-sm text-muted-foreground">
-                  Distractions removed instantly while perfectly reconstructing the background.
-                </p>
+              <div style={{ width: '100%', height: '100%' }}>
+                <img
+                  src="/showcase-cleanup-after.jpg"
+                  alt="Intelligent Cleanup Processed"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
               </div>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Processed</h3>
+              <p className="text-sm text-muted-foreground">
+                Distractions removed instantly while perfectly reconstructing the background.
+              </p>
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+            <div className="aspect-video relative overflow-hidden">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Text-to-Image
                 </span>
               </div>
-              <div className="text-center p-6">
-                <h3 className="font-semibold text-foreground mb-2">Cinematic Concept Art</h3>
-                <p className="text-sm text-muted-foreground">
-                  Generate breathtaking 8K sci-fi landscapes from simple text descriptions.
-                </p>
+              <div style={{ width: '100%', height: '100%' }}>
+                <img
+                  src="/showcase-creative-city.jpg"
+                  alt="Cinematic Concept Art"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
               </div>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Cinematic Concept Art</h3>
+              <p className="text-sm text-muted-foreground">
+                Generate breathtaking 8K sci-fi landscapes from simple text descriptions.
+              </p>
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+            <div className="aspect-video relative overflow-hidden">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Commercial Quality
                 </span>
               </div>
-              <div className="text-center p-6">
-                <h3 className="font-semibold text-foreground mb-2">Photorealistic Product Shots</h3>
-                <p className="text-sm text-muted-foreground">
-                  Studio-quality commercial photography generated without a physical camera.
-                </p>
+              <div style={{ width: '100%', height: '100%' }}>
+                <img
+                  src="/showcase-product-photo.jpg"
+                  alt="Photorealistic Product Shots"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
               </div>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Photorealistic Product Shots</h3>
+              <p className="text-sm text-muted-foreground">
+                Studio-quality commercial photography generated without a physical camera.
+              </p>
             </div>
           </Card>
         </div>
