@@ -66,12 +66,7 @@ export function ShowcaseSection() {
         {/* Showcase grid */}
         <div className="grid sm:grid-cols-2 gap-6 mb-12">
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
-              <img
-                src="https://via.placeholder.com/800x450?text=Intelligent+Cleanup+Original"
-                alt="Zlseren AI Intelligent Cleanup: Original"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+            <div className="aspect-video relative overflow-hidden bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{backgroundImage: 'url(https://via.placeholder.com/800x450?text=Intelligent+Cleanup+Original)'}}>
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Input Image
@@ -86,12 +81,7 @@ export function ShowcaseSection() {
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
-              <img
-                src="https://via.placeholder.com/800x450?text=Intelligent+Cleanup+Processed"
-                alt="Zlseren AI Intelligent Cleanup: Processed"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+            <div className="aspect-video relative overflow-hidden bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{backgroundImage: 'url(https://via.placeholder.com/800x450?text=Intelligent+Cleanup+Processed)'}}>
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ AI Processed
@@ -106,12 +96,7 @@ export function ShowcaseSection() {
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
-              <img
-                src="https://via.placeholder.com/800x450?text=Cinematic+Concept+Art"
-                alt="Zlseren AI Cinematic Concept Art"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+            <div className="aspect-video relative overflow-hidden bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{backgroundImage: 'url(https://via.placeholder.com/800x450?text=Cinematic+Concept+Art)'}}>
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Text-to-Image
@@ -126,12 +111,7 @@ export function ShowcaseSection() {
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
-              <img
-                src="https://via.placeholder.com/800x450?text=Photorealistic+Product+Shots"
-                alt="Zlseren AI Photorealistic Product Shots"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
+            <div className="aspect-video relative overflow-hidden bg-cover bg-center group-hover:scale-105 transition-transform duration-500" style={{backgroundImage: 'url(https://via.placeholder.com/800x450?text=Photorealistic+Product+Shots)'}}>
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Commercial Quality
