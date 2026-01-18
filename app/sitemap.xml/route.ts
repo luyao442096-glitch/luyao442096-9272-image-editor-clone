@@ -11,6 +11,8 @@ export async function GET() {
     { path: '/generator', priority: 0.9, changefreq: 'daily' },
     { path: '/pricing', priority: 0.8, changefreq: 'weekly' },
     { path: '/login', priority: 0.6, changefreq: 'monthly' },
+    { path: '/privacy', priority: 0.7, changefreq: 'monthly' },
+    { path: '/terms', priority: 0.7, changefreq: 'monthly' },
     { path: '/pricing/success', priority: 0.5, changefreq: 'monthly' },
     { path: '/auth/auth-code-error', priority: 0.4, changefreq: 'monthly' },
   ];

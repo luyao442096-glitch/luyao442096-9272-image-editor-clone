@@ -19,7 +19,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <span className="text-2xl">🍌</span>
-              <span className="font-bold text-xl text-background">Nano Banana</span>
+              <span className="font-bold text-xl text-background">Zlseren AI</span>
             </Link>
             <p className="text-background/70 text-sm max-w-md leading-relaxed">{t.footerDescription}</p>
           </div>
@@ -80,13 +80,13 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="pt-8 border-t border-background/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-background/50 text-sm">© 2026 Nano Banana. {t.allRights}</p>
+          <p className="text-background/50 text-sm">© 2026 Zlseren AI. {t.allRights}</p>
           <div className="flex items-center gap-6">
-            <Link href="#" className="text-background/50 hover:text-banana transition-colors text-sm">
-              {t.privacy}
+            <Link href="/privacy" className="text-background/50 hover:text-banana transition-colors text-sm">
+              Privacy Policy
             </Link>
-            <Link href="#" className="text-background/50 hover:text-banana transition-colors text-sm">
-              {t.terms}
+            <Link href="/terms" className="text-background/50 hover:text-banana transition-colors text-sm">
+              Terms of Service
             </Link>
             <Link href="#" className="text-background/50 hover:text-banana transition-colors text-sm">
               {t.cookies}
