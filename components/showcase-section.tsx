@@ -65,28 +65,86 @@ export function ShowcaseSection() {
 
         {/* Showcase grid */}
         <div className="grid sm:grid-cols-2 gap-6 mb-12">
-          {showcaseItems.map((item) => (
-            <Card key={item.titleEn} className="overflow-hidden group cursor-pointer bg-card">
-              <div className="aspect-video relative overflow-hidden">
-                <img
-                  src={item.image || "/placeholder.svg"}
-                  alt={`Zlseren AI ${locale === "zh" ? item.titleZh : item.titleEn}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-3 left-3">
-                  <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
-                    ⚡ {locale === "zh" ? item.badgeZh : item.badgeEn}
-                  </span>
-                </div>
+          <Card className="overflow-hidden group cursor-pointer bg-card">
+            <div className="aspect-video relative overflow-hidden">
+              <img
+                src="/showcase-cleanup-before.jpg"
+                alt="Zlseren AI Intelligent Cleanup: Original"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-3 left-3">
+                <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
+                  ⚡ Input Image
+                </span>
               </div>
-              <div className="p-5">
-                <h3 className="font-semibold text-foreground mb-2">{locale === "zh" ? item.titleZh : item.titleEn}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {locale === "zh" ? item.descriptionZh : item.descriptionEn}
-                </p>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Original</h3>
+              <p className="text-sm text-muted-foreground">
+                Complex scene with unwanted tourists and cluttered objects.
+              </p>
+            </div>
+          </Card>
+          <Card className="overflow-hidden group cursor-pointer bg-card">
+            <div className="aspect-video relative overflow-hidden">
+              <img
+                src="/showcase-cleanup-after.jpg"
+                alt="Zlseren AI Intelligent Cleanup: Processed"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-3 left-3">
+                <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
+                  ⚡ AI Processed
+                </span>
               </div>
-            </Card>
-          ))}
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Intelligent Cleanup: Processed</h3>
+              <p className="text-sm text-muted-foreground">
+                Distractions removed instantly while perfectly reconstructing the background.
+              </p>
+            </div>
+          </Card>
+          <Card className="overflow-hidden group cursor-pointer bg-card">
+            <div className="aspect-video relative overflow-hidden">
+              <img
+                src="/showcase-creative-city.jpg"
+                alt="Zlseren AI Cinematic Concept Art"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-3 left-3">
+                <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
+                  ⚡ Text-to-Image
+                </span>
+              </div>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Cinematic Concept Art</h3>
+              <p className="text-sm text-muted-foreground">
+                Generate breathtaking 8K sci-fi landscapes from simple text descriptions.
+              </p>
+            </div>
+          </Card>
+          <Card className="overflow-hidden group cursor-pointer bg-card">
+            <div className="aspect-video relative overflow-hidden">
+              <img
+                src="/showcase-product-photo.jpg"
+                alt="Zlseren AI Photorealistic Product Shots"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-3 left-3">
+                <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
+                  ⚡ Commercial Quality
+                </span>
+              </div>
+            </div>
+            <div className="p-5">
+              <h3 className="font-semibold text-foreground mb-2">Photorealistic Product Shots</h3>
+              <p className="text-sm text-muted-foreground">
+                Studio-quality commercial photography generated without a physical camera.
+              </p>
+            </div>
+          </Card>
         </div>
 
         {/* CTA */}
