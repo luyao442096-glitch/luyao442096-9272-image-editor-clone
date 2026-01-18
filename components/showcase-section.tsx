@@ -68,7 +68,7 @@ export function ShowcaseSection() {
           <Card className="overflow-hidden group cursor-pointer bg-card">
             <div className="aspect-video relative overflow-hidden">
               <img
-                src="/showcase-cleanup-before.jpg"
+                src="https://via.placeholder.com/800x450?text=Intelligent+Cleanup+Original"
                 alt="Zlseren AI Intelligent Cleanup: Original"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
@@ -88,7 +88,7 @@ export function ShowcaseSection() {
           <Card className="overflow-hidden group cursor-pointer bg-card">
             <div className="aspect-video relative overflow-hidden">
               <img
-                src="/showcase-cleanup-after.jpg"
+                src="https://via.placeholder.com/800x450?text=Intelligent+Cleanup+Processed"
                 alt="Zlseren AI Intelligent Cleanup: Processed"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
@@ -108,7 +108,7 @@ export function ShowcaseSection() {
           <Card className="overflow-hidden group cursor-pointer bg-card">
             <div className="aspect-video relative overflow-hidden">
               <img
-                src="/showcase-creative-city.jpg"
+                src="https://via.placeholder.com/800x450?text=Cinematic+Concept+Art"
                 alt="Zlseren AI Cinematic Concept Art"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
@@ -128,7 +128,7 @@ export function ShowcaseSection() {
           <Card className="overflow-hidden group cursor-pointer bg-card">
             <div className="aspect-video relative overflow-hidden">
               <img
-                src="/showcase-product-photo.jpg"
+                src="https://via.placeholder.com/800x450?text=Photorealistic+Product+Shots"
                 alt="Zlseren AI Photorealistic Product Shots"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
