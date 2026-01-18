@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, Zap, Crown, Sparkles, Spinner } from "lucide-react"
+import { Check, Zap, Crown, Sparkles, Loader2 } from "lucide-react"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
 import { BananaDecoration } from "@/components/banana-decoration"
@@ -218,7 +218,7 @@ export function PricingSection() {
                   >
                     {loading ? (
                       <>
-                        <Spinner className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {t.subscribeNow}
                       </>
                     ) : (
