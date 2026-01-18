@@ -66,17 +66,26 @@ export function ShowcaseSection() {
         {/* Showcase grid */}
         <div className="grid sm:grid-cols-2 gap-6 mb-12">
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
+            <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Input Image
                 </span>
               </div>
-              <div style={{ width: '100%', height: '100%' }}>
+              <div className="w-full h-full">
                 <img
                   src="/showcase-cleanup-before.jpg"
                   alt="Intelligent Cleanup Original"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
+                    target.parentElement?.appendChild(
+                      document.createTextNode('Image failed to load')
+                    );
+                  }}
                 />
               </div>
             </div>
@@ -88,17 +97,26 @@ export function ShowcaseSection() {
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
+            <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ AI Processed
                 </span>
               </div>
-              <div style={{ width: '100%', height: '100%' }}>
+              <div className="w-full h-full">
                 <img
                   src="/showcase-cleanup-after.jpg"
                   alt="Intelligent Cleanup Processed"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
+                    target.parentElement?.appendChild(
+                      document.createTextNode('Image failed to load')
+                    );
+                  }}
                 />
               </div>
             </div>
@@ -110,17 +128,26 @@ export function ShowcaseSection() {
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
+            <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Text-to-Image
                 </span>
               </div>
-              <div style={{ width: '100%', height: '100%' }}>
+              <div className="w-full h-full">
                 <img
                   src="/showcase-creative-city.jpg"
                   alt="Cinematic Concept Art"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
+                    target.parentElement?.appendChild(
+                      document.createTextNode('Image failed to load')
+                    );
+                  }}
                 />
               </div>
             </div>
@@ -132,17 +159,26 @@ export function ShowcaseSection() {
             </div>
           </Card>
           <Card className="overflow-hidden group cursor-pointer bg-card">
-            <div className="aspect-video relative overflow-hidden">
+            <div className="aspect-video relative overflow-hidden bg-gray-100">
               <div className="absolute top-3 left-3">
                 <span className="px-3 py-1 bg-banana text-accent-foreground text-xs font-medium rounded-full">
                   ⚡ Commercial Quality
                 </span>
               </div>
-              <div style={{ width: '100%', height: '100%' }}>
+              <div className="w-full h-full">
                 <img
                   src="/showcase-product-photo.jpg"
                   alt="Photorealistic Product Shots"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error('Image failed to load:', e.target.src);
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
+                    target.parentElement?.appendChild(
+                      document.createTextNode('Image failed to load')
+                    );
+                  }}
                 />
               </div>
             </div>
