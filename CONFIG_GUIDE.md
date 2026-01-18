@@ -117,7 +117,7 @@ OPENROUTER_API_KEY=your_openrouter_key_here
 
 # Site Configuration
 SITE_URL=http://localhost:3000
-SITE_NAME=Nano Banana
+SITE_NAME=Zlseren AI
 
 # Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co

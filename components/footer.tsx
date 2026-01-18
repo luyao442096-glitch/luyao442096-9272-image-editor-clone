@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BananaDecoration } from "@/components/banana-decoration"
+import { SparkleDecoration } from "@/components/banana-decoration"
 import { useLocale } from "@/lib/locale-context"
 
 export function Footer() {
@@ -10,15 +10,15 @@ export function Footer() {
   return (
     <footer className="bg-foreground text-background py-16 relative overflow-hidden">
       {/* Decorative bananas */}
-      <BananaDecoration className="absolute top-8 right-16 w-20 h-20 rotate-[15deg] opacity-10" />
-      <BananaDecoration className="absolute bottom-8 left-12 w-16 h-16 rotate-[-20deg] opacity-10" />
+      <SparkleDecoration className="absolute top-8 right-16 w-20 h-20 rotate-[15deg] opacity-10" />
+      <SparkleDecoration className="absolute bottom-8 left-12 w-16 h-16 rotate-[-20deg] opacity-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🍌</span>
+              <span className="text-2xl">⚡</span>
               <span className="font-bold text-xl text-background">Zlseren AI</span>
             </Link>
             <p className="text-background/70 text-sm max-w-md leading-relaxed">{t.footerDescription}</p>

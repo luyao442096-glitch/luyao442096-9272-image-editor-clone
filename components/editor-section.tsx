@@ -242,12 +242,18 @@ export function EditorSection() {
                 <SelectTrigger className="w-full">
                   <SelectValue>
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">🍌</span>
+                      <span className="text-lg">
+                        {selectedModel === "nano-banana"
+                          ? "✨"
+                          : selectedModel === "nano-banana-pro"
+                            ? "⚡"
+                            : "✨"}
+                      </span>
                       <span>
                         {selectedModel === "nano-banana"
-                          ? "Nano Banana"
+                          ? "Zlseren Basic"
                           : selectedModel === "nano-banana-pro"
-                            ? "Nano Banana Pro"
+                            ? "Zlseren Pro"
                             : "SeeDream 4"}
                       </span>
                     </div>
@@ -256,14 +262,14 @@ export function EditorSection() {
                 <SelectContent>
                   <SelectItem value="nano-banana">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">🍌</span>
-                      <span>Nano Banana</span>
+                      <span className="text-lg">✨</span>
+                      <span>Zlseren Basic</span>
                     </div>
                   </SelectItem>
                   <SelectItem value="nano-banana-pro">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg">🍌</span>
-                      <span>Nano Banana Pro</span>
+                      <span className="text-lg">⚡</span>
+                      <span>Zlseren Pro</span>
                     </div>
                   </SelectItem>
                   <SelectItem value="seedream-4">
@@ -409,7 +415,7 @@ export function EditorSection() {
               {isGenerating ? (
                 <div className="flex flex-col items-center">
                   <div className="w-16 h-16 rounded-full bg-banana-light flex items-center justify-center mb-4 animate-pulse">
-                    <span className="text-3xl">🍌</span>
+                    <span className="text-3xl">⚡</span>
                   </div>
                   <p className="font-medium text-foreground mb-2">{t.generating}</p>
                 </div>
@@ -440,7 +446,7 @@ export function EditorSection() {
               ) : (
                 <>
                   <div className="w-16 h-16 rounded-full bg-banana-light flex items-center justify-center mb-4">
-                    <span className="text-3xl">🍌</span>
+                    <span className="text-3xl">✨</span>
                   </div>
                   <p className="font-medium text-foreground mb-2">{t.readyForGeneration}</p>
                   <p className="text-sm text-muted-foreground">{t.enterPrompt}</p>

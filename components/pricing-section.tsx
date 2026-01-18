@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Check, Zap, Crown, Sparkles, Loader2 } from "lucide-react"
 import { useLocale } from "@/lib/locale-context"
 import { useAuth } from "@/lib/auth-context"
-import { BananaDecoration } from "@/components/banana-decoration"
+import { SparkleDecoration } from "@/components/banana-decoration"
 
 const plans = [
   {
@@ -127,8 +127,8 @@ export function PricingSection() {
   return (
     <section id="pricing" className="py-20 bg-background relative overflow-hidden">
       {/* Decorative bananas */}
-      <BananaDecoration className="absolute top-20 left-5 w-14 h-14 rotate-[-25deg] opacity-25" />
-      <BananaDecoration className="absolute bottom-10 right-8 w-18 h-18 rotate-[30deg] opacity-20" />
+      <SparkleDecoration className="absolute top-20 left-5 w-14 h-14 rotate-[-25deg] opacity-25" />
+      <SparkleDecoration className="absolute bottom-10 right-8 w-18 h-18 rotate-[30deg] opacity-20" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section header */}

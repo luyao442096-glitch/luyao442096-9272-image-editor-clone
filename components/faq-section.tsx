@@ -1,7 +1,7 @@
 "use client"
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { BananaDecoration } from "@/components/banana-decoration"
+import { SparkleDecoration } from "@/components/banana-decoration"
 import { useLocale } from "@/lib/locale-context"
 
 const faqs = [
@@ -54,9 +54,9 @@ export function FAQSection() {
 
   return (
     <section id="faq" className="py-20 bg-white relative overflow-hidden">
-      {/* Decorative bananas */}
-      <BananaDecoration className="absolute top-20 left-5 w-14 h-14 rotate-[-25deg] opacity-10" />
-      <BananaDecoration className="absolute bottom-10 right-8 w-18 h-18 rotate-[30deg] opacity-10" />
+      {/* Decorative sparkles */}
+      <SparkleDecoration className="absolute top-20 left-5 w-14 h-14 rotate-[-25deg] opacity-10" />
+      <SparkleDecoration className="absolute bottom-10 right-8 w-18 h-18 rotate-[30deg] opacity-10" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section header */}

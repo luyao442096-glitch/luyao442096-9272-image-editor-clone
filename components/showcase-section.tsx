@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { BananaDecoration } from "@/components/banana-decoration"
+import { SparkleDecoration } from "@/components/banana-decoration"
 import Link from "next/link"
 import Image from "next/image"
 import { useLocale } from "@/lib/locale-context"
@@ -44,8 +44,8 @@ export function ShowcaseSection() {
   return (
     <section id="showcase" className="py-20 bg-secondary/30 relative overflow-hidden">
       {/* Decorative bananas */}
-      <BananaDecoration className="absolute top-10 right-10 w-24 h-24 rotate-[20deg] opacity-30" />
-      <BananaDecoration className="absolute bottom-20 left-10 w-16 h-16 rotate-[-15deg] opacity-25" />
+      <SparkleDecoration className="absolute top-10 right-10 w-24 h-24 rotate-[20deg] opacity-30" />
+      <SparkleDecoration className="absolute bottom-20 left-10 w-16 h-16 rotate-[-15deg] opacity-25" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section header */}
@@ -91,7 +91,7 @@ export function ShowcaseSection() {
           </p>
           <Button size="lg" className="bg-banana text-accent-foreground hover:bg-banana-dark" asChild>
             <Link href="/generator">
-              <span className="mr-2">🍌</span>
+              <span className="mr-2">⚡</span>
               {t.generator}
             </Link>
           </Button>

@@ -158,7 +158,7 @@ export default function GeneratorContent() {
         <div className="max-w-7xl mx-auto">
           {/* Breadcrumb & Title */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6"><Link href="/" className="hover:text-foreground flex items-center gap-1"><Home className="w-4 h-4"/>Home</Link><ChevronDown className="w-4 h-4 rotate-[-90deg]"/><span className="text-foreground font-medium">{t.generator}</span></div>
-          <div className="mb-8"><h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3"><span className="text-4xl">🍌</span>{mode === "image-to-image" ? t.imageEdit : t.textToImage}</h1><p className="text-muted-foreground">{mode === "image-to-image" ? t.transformExisting : t.generateNew}</p></div>
+          <div className="mb-8"><h1 className="text-3xl font-bold text-foreground mb-2 flex items-center gap-3"><span className="text-4xl">⚡</span>{mode === "image-to-image" ? t.imageEdit : t.textToImage}</h1><p className="text-muted-foreground">{mode === "image-to-image" ? t.transformExisting : t.generateNew}</p></div>
           
           <div className="grid lg:grid-cols-[1fr,400px] gap-8">
             <Card className="p-6 bg-card border-border">
@@ -171,10 +171,29 @@ export default function GeneratorContent() {
               
               <div className="mb-6"><h3 className="font-semibold text-foreground mb-2">{t.aiModelSelection}</h3>
                 <Select value={selectedModel} onValueChange={setSelectedModel}>
-                  <SelectTrigger><SelectValue/></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">
+                          {selectedModel === "nano-banana"
+                            ? "✨"
+                            : selectedModel === "nano-banana-pro"
+                              ? "⚡"
+                              : "✨"}
+                        </span>
+                        <span>
+                          {selectedModel === "nano-banana"
+                            ? "Zlseren Basic"
+                            : selectedModel === "nano-banana-pro"
+                              ? "Zlseren Pro"
+                              : "SeeDream 4"}
+                        </span>
+                      </div>
+                    </SelectValue>
+                  </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="nano-banana"><div className="flex items-center gap-2"><span>🍌</span><span>Nano Banana</span></div></SelectItem>
-                    <SelectItem value="nano-banana-pro"><div className="flex items-center gap-2"><span>🍌</span><span>Nano Banana Pro</span><Badge className="bg-banana text-accent-foreground text-[10px] px-1">PRO</Badge></div></SelectItem>
+                    <SelectItem value="nano-banana"><div className="flex items-center gap-2"><span>✨</span><span>Zlseren Basic</span></div></SelectItem>
+                    <SelectItem value="nano-banana-pro"><div className="flex items-center gap-2"><span>⚡</span><span>Zlseren Pro</span><Badge className="bg-banana text-accent-foreground text-[10px] px-1">PRO</Badge></div></SelectItem>
                     <SelectItem value="seedream-4"><div className="flex items-center gap-2"><span>✨</span><span>SeeDream 4</span></div></SelectItem>
                   </SelectContent>
                 </Select>

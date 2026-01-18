@@ -14,9 +14,9 @@ export const translations = {
     generator: "Generator",
 
     // Hero
-    heroTitle: "释放 AI 的力量，按需付费，无需订阅",
+    heroTitle: "Flexible Credits. Pay As You Go.",
     heroSubtitle:
-      "Zlseren AI 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。",
+      "Start with 10 free credits on us. No monthly subscriptions, no hidden fees. Simply purchase credits when you need them and create without limits.",
     getStarted: "Get Started",
     viewShowcase: "View Showcase",
 
@@ -132,8 +132,8 @@ export const translations = {
     generator: "生成器",
 
     // Hero
-    heroTitle: "释放 AI 的力量，按需付费，无需订阅",
-    heroSubtitle: "Zlseren AI 提供稳定高效的 AI 工具服务。采用灵活积分制计费，充值即用，支持多种支付方式，助力您的智能办公与创意写作。",
+    heroTitle: "Flexible Credits. Pay As You Go.",
+    heroSubtitle: "Start with 10 free credits on us. No monthly subscriptions, no hidden fees. Simply purchase credits when you need them and create without limits.",
     getStarted: "开始使用",
     viewShowcase: "查看案例",
 
@@ -194,7 +194,7 @@ export const translations = {
 
     // FAQ
     faqTitle: "常见问题",
-    faqSubtitle: "关于Nano Banana您需要了解的一切",
+    faqSubtitle: "关于Zlseren AI您需要了解的一切",
 
     // Footer
     footerDescription: "使用简单的文字提示转换任何图像。最先进的AI图像编辑器。",

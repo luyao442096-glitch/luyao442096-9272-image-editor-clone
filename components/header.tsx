@@ -66,7 +66,7 @@ export function Header() {
         <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 text-sm">
            {/* ...省略 Banner 部分... */}
            <span className="flex items-center gap-1">
-            <span className="text-base">🍌</span>
+            <span className="text-base">⚡</span>
             {t.newBanner}
           </span>
           <Link href="/generator" className="font-semibold hover:underline">

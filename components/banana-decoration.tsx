@@ -1,20 +1,16 @@
-export function BananaDecoration({ className }: { className?: string }) {
+export function SparkleDecoration({ className }: { className?: string }) {
   return (
     <div className={className}>
       <svg viewBox="0 0 100 100" className="w-full h-full">
         <path
-          d="M75 20 C85 25, 90 40, 85 60 C80 80, 60 90, 40 85 C30 82, 25 75, 30 65 C35 55, 50 50, 65 45 C75 42, 78 35, 75 20"
-          fill="#FFE135"
-          stroke="#E6C82E"
+          d="M50 15 L55 35 L75 35 L60 50 L65 70 L50 55 L35 70 L40 50 L25 35 L45 35 Z"
+          fill="#FFD700"
+          stroke="#FFC107"
           strokeWidth="2"
         />
-        <path
-          d="M72 25 C78 28, 82 38, 80 52 C77 68, 62 78, 48 75"
-          fill="none"
-          stroke="#FFD700"
-          strokeWidth="3"
-          strokeLinecap="round"
-        />
+        <circle cx="50" cy="45" r="4" fill="#FFF8DC" />
+        <circle cx="40" cy="50" r="3" fill="#FFF8DC" />
+        <circle cx="60" cy="50" r="3" fill="#FFF8DC" />
       </svg>
     </div>
   )

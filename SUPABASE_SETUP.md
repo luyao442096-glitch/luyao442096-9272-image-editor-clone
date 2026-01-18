@@ -141,7 +141,7 @@
    
    # Site Configuration
    SITE_URL=http://localhost:3000
-   SITE_NAME=Nano Banana
+   SITE_NAME=Zlseren AI
    
    # Supabase Configuration
    NEXT_PUBLIC_SUPABASE_URL=https://abcdefghijklmnop.supabase.co

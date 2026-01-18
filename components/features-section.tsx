@@ -10,8 +10,8 @@ const features = [
     titleEn: "Natural Language Editing",
     titleZh: "自然语言编辑",
     descriptionEn:
-      "Edit images using simple text prompts. Nano Banana AI understands complex instructions like GPT for images.",
-    descriptionZh: "使用简单的文字提示编辑图像。Nano Banana AI 能理解复杂的指令，就像图像版的 GPT。",
+      "Edit images using simple text prompts. Zlseren AI understands complex instructions like GPT for images.",
+    descriptionZh: "使用简单的文字提示编辑图像。Zlseren AI 能理解复杂的指令，就像图像版的 GPT。",
   },
   {
     icon: User,
@@ -33,8 +33,8 @@ const features = [
     titleEn: "One-Shot Editing",
     titleZh: "一次成功编辑",
     descriptionEn:
-      "Perfect results in a single attempt. Nano Banana solves one-shot image editing challenges effortlessly.",
-    descriptionZh: "一次尝试即可获得完美结果。Nano Banana 轻松解决一次性图像编辑的难题。",
+      "Perfect results in a single attempt. Zlseren AI solves one-shot image editing challenges effortlessly.",
+    descriptionZh: "一次尝试即可获得完美结果。Zlseren AI 轻松解决一次性图像编辑的难题。",
   },
   {
     icon: Images,

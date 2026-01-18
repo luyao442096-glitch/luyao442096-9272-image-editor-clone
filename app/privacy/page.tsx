@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { BananaDecoration } from "@/components/banana-decoration"
+import { SparkleDecoration } from "@/components/banana-decoration"
 
 export const metadata: Metadata = {
   title: "Terms of Service - Zlseren AI",
@@ -17,8 +17,8 @@ export default function PrivacyPage() {
       <Header />
       <section className="pt-24 pb-20 relative overflow-hidden">
         {/* Decorative bananas */}
-        <BananaDecoration className="absolute top-20 left-5 w-14 h-14 rotate-[-25deg] opacity-10" />
-        <BananaDecoration className="absolute bottom-10 right-8 w-18 h-18 rotate-[30deg] opacity-10" />
+        <SparkleDecoration className="absolute top-20 left-5 w-14 h-14 rotate-[-25deg] opacity-10" />
+        <SparkleDecoration className="absolute bottom-10 right-8 w-18 h-18 rotate-[30deg] opacity-10" />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-12">

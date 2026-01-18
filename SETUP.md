@@ -15,7 +15,7 @@ OPENROUTER_API_KEY=your_openrouter_api_key_here
 
 # Site Configuration (Optional - for OpenRouter rankings)
 SITE_URL=http://localhost:3000
-SITE_NAME=Nano Banana
+SITE_NAME=Zlseren AI
 
 # Supabase Configuration (Required for authentication)
 # Get these from your Supabase project settings: https://app.supabase.com/project/_/settings/api

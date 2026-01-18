@@ -11,7 +11,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY || "",
   defaultHeaders: {
     "HTTP-Referer": process.env.SITE_URL || "http://localhost:3000",
-    "X-Title": process.env.SITE_NAME || "Nano Banana",
+    "X-Title": process.env.SITE_NAME || "Zlseren AI",
   },
 })
 

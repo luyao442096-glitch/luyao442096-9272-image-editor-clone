@@ -45,10 +45,10 @@ export const metadata: Metadata = {
   },
   // 其他元数据
   authors: [
-    { name: 'Nano Banana Team' }
+    { name: 'Zlseren AI Team' }
   ],
   category: 'Technology',
-  publisher: 'Nano Banana',
+  publisher: 'Zlseren AI',
   formatDetection: {
     email: false,
     address: false,
