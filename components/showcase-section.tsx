@@ -78,7 +78,7 @@ export function ShowcaseSection() {
                   alt="Beautiful Garden with Colorful Flowers"
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    console.error('Image failed to load:', e.target.src);
+                    console.error('Image failed to load:', (e.target as HTMLImageElement).src);
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
@@ -109,7 +109,7 @@ export function ShowcaseSection() {
                   alt="Majestic Mountain Landscape with Snow"
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    console.error('Image failed to load:', e.target.src);
+                    console.error('Image failed to load:', (e.target as HTMLImageElement).src);
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
@@ -140,7 +140,7 @@ export function ShowcaseSection() {
                   alt="Northern Lights Aurora Borealis Over Snowy Landscape"
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    console.error('Image failed to load:', e.target.src);
+                    console.error('Image failed to load:', (e.target as HTMLImageElement).src);
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
@@ -171,7 +171,7 @@ export function ShowcaseSection() {
                   alt="Tropical Beach with Crystal Clear Water"
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    console.error('Image failed to load:', e.target.src);
+                    console.error('Image failed to load:', (e.target as HTMLImageElement).src);
                     const target = e.target as HTMLImageElement;
                     target.style.display = 'none';
                     target.parentElement?.classList.add('flex', 'items-center', 'justify-center', 'bg-red-100');
