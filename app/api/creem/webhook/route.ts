@@ -38,12 +38,26 @@ export async function POST(req: NextRequest) {
 
       // 3. 计算要加多少分
       let creditsToAdd = 0;
-      // Basic Plan ID
-      if (productId === "prod_2U14J3cNweMcQPQaQiTHTt") creditsToAdd = 100; // 这里的100只是示例，按你的套餐改
-      // 其他 Plan 可以在这里加 else if...
       
-      // 如果是用测试代码，强制加 2400 分方便观察
-      if (!creditsToAdd) creditsToAdd = 2400; 
+      // 根据产品ID判断增加的积分
+      if (productId === "prod_6WKalf5Of9J37S0yXEqKcK") {
+        // Starter Pack
+        creditsToAdd = 200;
+      } else if (productId === "prod_65qZgLFUGQ1vI1mberV0pW") {
+        // Professional Pack
+        creditsToAdd = 800;
+      } else if (productId === "prod_4qjJaeiFEH8K0LEo5rRftl") {
+        // Studio Pack
+        creditsToAdd = 2000;
+      }
+      
+      console.log(`💵 产品ID: ${productId}, 要增加的积分: ${creditsToAdd}`);
+      
+      // 如果没有匹配到产品ID，返回错误
+      if (!creditsToAdd) {
+        console.error(`❌ 无效的产品ID: ${productId}`);
+        return NextResponse.json({ error: "Invalid product ID" }, { status: 400 });
+      } 
 
       // 4. 更新积分 - 使用原子操作确保数据一致性
       const newCredits = (user.credits || 0) + creditsToAdd;

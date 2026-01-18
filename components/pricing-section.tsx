@@ -11,24 +11,24 @@ import { SparkleDecoration } from "@/components/banana-decoration"
 
 const plans = [
   {
-    id: "basic",
-    nameEn: "Basic",
-    nameZh: "基础版",
-    priceMonthly: 12,
-    priceYearly: 144,
-    creditsPerYear: 2400,
-    imagesPerMonth: 100,
+    id: "starter",
+    nameEn: "Starter Pack",
+    nameZh: "入门包",
+    credits: 200,
+    price: 9.90,
+    productId: "prod_6WKalf5Of9J37S0yXEqKcK",
+    link: "https://www.creem.io/payment/prod_6WKalf5Of9J37S0yXEqKcK",
     featuresEn: [
-      "All style templates",
+      "200 credits",
+      "All basic features",
       "Standard generation speed",
-      "Basic customer support",
       "JPG/PNG format downloads",
       "Commercial use license",
     ],
     featuresZh: [
-      "所有风格模板",
+      "200 积分",
+      "所有基础功能",
       "标准生成速度",
-      "基础客户支持",
       "JPG/PNG格式下载",
       "商业使用许可",
     ],
@@ -36,56 +36,54 @@ const plans = [
     popular: false,
   },
   {
-    id: "pro",
-    nameEn: "Pro",
-    nameZh: "专业版",
-    priceMonthly: 19.5,
-    priceYearly: 234,
-    creditsPerYear: 9600,
-    imagesPerMonth: 400,
+    id: "professional",
+    nameEn: "Professional Pack",
+    nameZh: "专业包",
+    credits: 800,
+    price: 29.90,
+    productId: "prod_65qZgLFUGQ1vI1mberV0pW",
+    link: "https://www.creem.io/payment/prod_65qZgLFUGQ1vI1mberV0pW",
     featuresEn: [
-      "Seedream-4 & Nanobanana-Pro models",
+      "800 credits",
+      "All professional features",
       "Priority generation queue",
-      "Priority customer support",
       "JPG/PNG/WebP format downloads",
       "Batch generation feature",
-      "Upcoming image editing tools",
       "Commercial use license",
     ],
     featuresZh: [
-      "Seedream-4 和 Nanobanana-Pro 模型",
+      "800 积分",
+      "所有专业功能",
       "优先生成队列",
-      "优先客户支持",
       "JPG/PNG/WebP格式下载",
       "批量生成功能",
-      "即将推出的图像编辑工具",
       "商业使用许可",
     ],
     icon: Zap,
     popular: true,
   },
   {
-    id: "max",
-    nameEn: "Max",
-    nameZh: "旗舰版",
-    priceMonthly: 80,
-    priceYearly: 960,
-    creditsPerYear: 43200,
-    imagesPerMonth: 1800,
+    id: "studio",
+    nameEn: "Studio Pack",
+    nameZh: "工作室包",
+    credits: 2000,
+    price: 69.90,
+    productId: "prod_4qjJaeiFEH8K0LEo5rRftl",
+    link: "https://www.creem.io/payment/prod_4qjJaeiFEH8K0LEo5rRftl",
     featuresEn: [
+      "2000 credits",
+      "All premium features",
       "Fastest generation speed",
-      "Dedicated account manager",
       "All format downloads",
       "Batch generation feature",
-      "Upcoming professional editing suite",
       "Commercial use license",
     ],
     featuresZh: [
+      "2000 积分",
+      "所有高级功能",
       "最快生成速度",
-      "专属客户经理",
       "所有格式下载",
       "批量生成功能",
-      "即将推出的专业编辑套件",
       "商业使用许可",
     ],
     icon: Crown,
@@ -96,26 +94,24 @@ const plans = [
 export function PricingSection() {
   const { locale, t } = useLocale()
   const { user } = useAuth()
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("yearly")
   const [loading, setLoading] = useState(false)
 
-  const handleSubscribe = (planId: string) => {
+  const handleBuyCredits = (planId: string) => {
     if (!user) {
       window.location.href = `/login?redirect=/pricing`
       return
     }
 
-    // 直接使用用户提供的支付链接
-    const paymentLinks: Record<string, string> = {
-      "basic": "https://www.creem.io/payment/prod_2U14J3cNweMcQPQaQiTHTt",
-      "pro": "https://www.creem.io/payment/prod_3GUDoBE0DSES3HGqYDC1S",
-      "max": "https://www.creem.io/payment/prod_42aqCZ9KQG1nScBkhK6m10",
-    }
-
-    const checkoutUrl = paymentLinks[planId]
-    if (checkoutUrl) {
+    // 找到对应的套餐
+    const selectedPlan = plans.find(plan => plan.id === planId)
+    
+    if (selectedPlan) {
       // 设置加载状态
       setLoading(true)
+      
+      // 在URL后拼接用户邮箱
+      const checkoutUrl = selectedPlan.link + `?email=${encodeURIComponent(user.email || '')}`
+      
       // 直接重定向到Creem支付页面
       window.location.href = checkoutUrl
     } else {
@@ -138,36 +134,12 @@ export function PricingSection() {
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">{t.pricingSubtitle}</p>
         </div>
 
-        {/* Billing period toggle */}
-        <div className="flex items-center justify-center gap-4 mb-12">
-          <span className={`text-sm ${billingPeriod === "monthly" ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-            {t.monthly}
-          </span>
-          <button
-            onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
-            className="relative w-14 h-8 bg-secondary rounded-full transition-colors"
-          >
-            <span
-              className={`absolute top-1 left-1 w-6 h-6 bg-banana rounded-full transition-transform ${
-                billingPeriod === "yearly" ? "translate-x-6" : ""
-              }`}
-            />
-          </button>
-          <span className={`text-sm ${billingPeriod === "yearly" ? "text-foreground font-medium" : "text-muted-foreground"}`}>
-            {t.yearly}
-          </span>
-          {billingPeriod === "yearly" && (
-            <Badge variant="outline" className="ml-2 bg-banana-light text-banana-dark border-banana">
-              {t.save50}
-            </Badge>
-          )}
-        </div>
+
 
         {/* Pricing cards */}
         <div className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-16">
           {plans.map((plan) => {
             const Icon = plan.icon
-            const price = billingPeriod === "monthly" ? plan.priceMonthly : plan.priceYearly
             const features = locale === "zh" ? plan.featuresZh : plan.featuresEn
             const planName = locale === "zh" ? plan.nameZh : plan.nameEn
 
@@ -188,11 +160,10 @@ export function PricingSection() {
                   </div>
                   <CardDescription className="text-base">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-bold text-foreground">${price}</span>
-                      <span className="text-sm text-muted-foreground">/{billingPeriod === "monthly" ? t.month : t.year}</span>
+                      <span className="text-4xl font-bold text-foreground">${plan.price.toFixed(2)}</span>
                     </div>
                     <div className="mt-2 text-sm">
-                      {plan.creditsPerYear.toLocaleString()} {t.creditsPerYear} ({plan.imagesPerMonth} {t.highQualityImagesPerMonth})
+                      {plan.credits.toLocaleString()} {t.credits}
                     </div>
                   </CardDescription>
                 </CardHeader>
@@ -208,7 +179,7 @@ export function PricingSection() {
                 </CardContent>
                 <CardFooter>
                   <Button
-                    onClick={() => handleSubscribe(plan.id)}
+                    onClick={() => handleBuyCredits(plan.id)}
                     className={`w-full ${plan.popular
                       ? "bg-banana text-accent-foreground hover:bg-banana-dark"
                       : "bg-primary text-primary-foreground hover:bg-primary/90"}
@@ -219,10 +190,10 @@ export function PricingSection() {
                     {loading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {t.subscribeNow}
+                        {t.buyCredits}
                       </>
                     ) : (
-                      t.subscribeNow
+                      t.buyCredits
                     )}
                   </Button>
                 </CardFooter>
@@ -237,12 +208,12 @@ export function PricingSection() {
           <p className="text-muted-foreground text-sm mb-4">{t.creditSystemDescription}</p>
           <div className="grid sm:grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="font-medium mb-1">{t.monthlyPlanCredits}</p>
-              <p className="text-muted-foreground">{t.monthlyPlanCreditsDesc}</p>
+              <p className="font-medium mb-1">{t.creditPackInfo}</p>
+              <p className="text-muted-foreground">{t.creditPackInfoDesc}</p>
             </div>
             <div>
-              <p className="font-medium mb-1">{t.yearlyPlanCredits}</p>
-              <p className="text-muted-foreground">{t.yearlyPlanCreditsDesc}</p>
+              <p className="font-medium mb-1">{t.creditUsageInfo}</p>
+              <p className="text-muted-foreground">{t.creditUsageInfoDesc}</p>
             </div>
           </div>
         </div>
