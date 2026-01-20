@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
+import Script from "next/script"
 import { Analytics } from "@vercel/analytics/next"
 import { LocaleProvider } from "@/lib/locale-context"
 import { AuthProvider } from "@/lib/auth-context"
@@ -64,7 +65,38 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      {/* Google Tag Manager - 添加到 head 中尽可能靠上的位置 */}
+      <Script
+        id="google-tag-manager"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TCGJHBJ5');`,
+        }}
+      />
+      
       <body className="font-sans antialiased">
+        {/* Google Tag Manager (noscript) - 紧跟起始 body 标记之后 */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-TCGJHBJ5"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        
+        {/* Ahrefs Analytics Script - 添加到 head 部分 */}
+        <Script
+          id="ahrefs-analytics"
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="5gzv0pKH6Z/18hLrdcc42Q"
+          strategy="afterInteractive"
+        />
+        
         {/* 结构化数据 - JSON-LD */}
         <script
           type="application/ld+json"
