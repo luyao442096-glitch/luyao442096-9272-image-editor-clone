@@ -2,6 +2,19 @@ import { NextResponse } from 'next/server';
 
 // 生成网站的动态XML站点地图
 // 遵循 sitemaps.org 0.9 协议标准
+
+// Sitemap 协议标准允许的 changefreq 值
+const VALID_CHANGEFREQ_VALUES = ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never'] as const;
+
+// 验证 changefreq 值的辅助函数
+function validateChangefreq(value: string): string {
+  if (!VALID_CHANGEFREQ_VALUES.includes(value as any)) {
+    console.warn(`Invalid changefreq value: ${value}. Defaulting to 'monthly'.`);
+    return 'monthly'; // 默认值
+  }
+  return value;
+}
+
 export async function GET() {
   // 网站的基本URL
   const baseUrl = 'https://www.zlseren.online';
@@ -27,8 +40,8 @@ export async function GET() {
     // ========== 用户支持 ==========
     { path: '/testimonials', priority: 0.8, changefreq: 'monthly' }, // 用户评价
     { path: '/faq', priority: 0.8, changefreq: 'monthly' }, // FAQ
-    { path: '/refund-policy', priority: 0.7, changefreq: 'quarterly' }, // 退款政策
-    { path: '/payment-security', priority: 0.7, changefreq: 'quarterly' }, // 支付安全
+    { path: '/refund-policy', priority: 0.7, changefreq: 'yearly' }, // 退款政策
+    { path: '/payment-security', priority: 0.7, changefreq: 'yearly' }, // 支付安全
     
     // ========== 关于我们 ==========
     { path: '/about', priority: 0.7, changefreq: 'monthly' }, // 关于我们
@@ -43,9 +56,15 @@ export async function GET() {
   ];
   
   // 生成XML内容
+  // 验证并清理所有路由数据，确保 changefreq 值符合标准
+  const validatedRoutes = staticRoutes.map(route => ({
+    ...route,
+    changefreq: validateChangefreq(route.changefreq),
+  }));
+  
   const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticRoutes
+${validatedRoutes
   .map(
     (route) => `  <url>
     <loc>${baseUrl}${route.path}</loc>
