@@ -78,6 +78,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         }}
       />
       
+      {/* Google Analytics (gtag.js) - 紧跟在 head 元素之后 */}
+      <Script
+        id="google-analytics-gtag"
+        src="https://www.googletagmanager.com/gtag/js?id=G-0Z5T7TVXKC"
+        strategy="afterInteractive"
+      />
+      <Script
+        id="google-analytics-config"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-0Z5T7TVXKC');
+          `,
+        }}
+      />
+      
       <body className="font-sans antialiased">
         {/* Google Tag Manager (noscript) - 紧跟起始 body 标记之后 */}
         <noscript>
