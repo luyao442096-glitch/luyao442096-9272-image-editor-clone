@@ -95,7 +95,7 @@ export default function PrivacyPage() {
             <div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">Contact Us</h2>
               <p>
-                If you have any questions about this Privacy Policy, please contact us at privacy@zlseren.online.
+                If you have any questions about this Privacy Policy, please contact us at luyao442096@gmail.com.
               </p>
             </div>
           </div>

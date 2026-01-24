@@ -59,7 +59,7 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">4. Refund Policy (Important)</h2>
               <ul className="list-disc pl-5 mt-2 space-y-1">
                 <li><strong>Digital Goods:</strong> Due to the nature of digital content and AI processing costs, purchases are generally <strong>non-refundable</strong> once the AI generation process has started.</li>
-                <li><strong>Exceptions:</strong> If a technical failure occurs that prevents the delivery of your generated image, or if you are double-charged due to a system error, please contact us at <strong>support@zlseren.online</strong> within 7 days. We will review your case and issue a refund if the error is confirmed on our end.</li>
+                <li><strong>Exceptions:</strong> If a technical failure occurs that prevents the delivery of your generated image, or if you are double-charged due to a system error, please contact us at <strong>luyao442096@gmail.com</strong> within 7 days. We will review your case and issue a refund if the error is confirmed on our end.</li>
               </ul>
             </div>
 
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
                 If you have any questions about these Terms, please contact us at:
               </p>
               <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li><strong>Email:</strong> support@zlseren.online</li>
+                <li><strong>Email:</strong> luyao442096@gmail.com</li>
               </ul>
             </div>
           </div>
