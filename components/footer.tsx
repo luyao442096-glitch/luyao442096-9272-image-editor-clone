@@ -24,23 +24,40 @@ export function Footer() {
             <p className="text-background/70 text-sm max-w-md leading-relaxed">{t.footerDescription}</p>
           </div>
 
-          {/* Links */}
+          {/* Product Links */}
           <div>
             <h4 className="font-semibold text-background mb-4">{t.product}</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
-                <Link href="/generator" className="text-background/70 hover:text-banana transition-colors text-sm">
+                <Link href="/generator" className="text-background/70 hover:text-banana transition-colors text-sm inline-block">
                   {t.editor}
                 </Link>
               </li>
               <li>
-                <Link href="/#features" className="text-background/70 hover:text-banana transition-colors text-sm">
+                <Link href="/#features" className="text-background/70 hover:text-banana transition-colors text-sm inline-block">
                   {t.features}
                 </Link>
               </li>
               <li>
-                <Link href="/pricing" className="text-background/70 hover:text-banana transition-colors text-sm">
+                <Link href="/pricing" className="text-background/70 hover:text-banana transition-colors text-sm inline-block">
                   {t.pricing}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal Links */}
+          <div>
+            <h4 className="font-semibold text-background mb-4">Legal</h4>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/privacy" className="text-background/70 hover:text-banana transition-colors text-sm inline-block">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link href="/terms" className="text-background/70 hover:text-banana transition-colors text-sm inline-block">
+                  Terms of Service
                 </Link>
               </li>
             </ul>
@@ -48,18 +65,14 @@ export function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-background/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <p className="text-background/50 text-sm">© 2026 Zlseren AI. {t.allRights}</p>
-            <p className="text-background/50 text-sm">Support Email: <a href="mailto:luyao442096@gmail.com" className="text-banana hover:underline">luyao442096@gmail.com</a></p>
-          </div>
-          <div className="flex items-center gap-6">
-            <Link href="/privacy" className="text-background/50 hover:text-banana transition-colors text-sm">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="text-background/50 hover:text-banana transition-colors text-sm">
-              Terms of Service
-            </Link>
+        <div className="pt-8 border-t border-background/20">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-background/50 text-sm text-center sm:text-left">
+              © 2026 Zlseren AI. {t.allRights}
+            </p>
+            <p className="text-background/50 text-sm text-center sm:text-right">
+              Support Email: <a href="mailto:luyao442096@gmail.com" className="text-banana hover:underline transition-colors">luyao442096@gmail.com</a>
+            </p>
           </div>
         </div>
       </div>
