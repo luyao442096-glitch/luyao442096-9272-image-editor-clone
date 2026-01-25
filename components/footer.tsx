@@ -43,37 +43,6 @@ export function Footer() {
                   {t.pricing}
                 </Link>
               </li>
-              <li>
-                <Link href="#" className="text-background/70 hover:text-banana transition-colors text-sm">
-                  {t.api}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-background mb-4">{t.company}</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="#" className="text-background/70 hover:text-banana transition-colors text-sm">
-                  {t.about}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-background/70 hover:text-banana transition-colors text-sm">
-                  {t.blog}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-background/70 hover:text-banana transition-colors text-sm">
-                  {t.careers}
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-background/70 hover:text-banana transition-colors text-sm">
-                  {t.contact}
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
@@ -90,9 +59,6 @@ export function Footer() {
             </Link>
             <Link href="/terms" className="text-background/50 hover:text-banana transition-colors text-sm">
               Terms of Service
-            </Link>
-            <Link href="#" className="text-background/50 hover:text-banana transition-colors text-sm">
-              {t.cookies}
             </Link>
           </div>
         </div>
