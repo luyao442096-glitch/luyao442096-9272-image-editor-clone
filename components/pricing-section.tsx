@@ -16,8 +16,8 @@ const plans = [
     nameZh: "入门包",
     credits: 200,
     price: 9.90,
-    productId: "prod_6WKalf5Of9J37S0yXEqKcK",
-    link: "https://www.creem.io/payment/prod_6WKalf5Of9J37S0yXEqKcK",
+    productId: "prod_4qjJaeiFEH8K0LEo5rRftl",
+    link: "https://www.creem.io/checkout/prod_4qjJaeiFEH8K0LEo5rRftl/ch_4loSZKXL7cYmnjE8UoLjtb",
     featuresEn: [
       "200 credits",
       "All basic features",
@@ -68,8 +68,8 @@ const plans = [
     nameZh: "工作室包",
     credits: 2000,
     price: 69.90,
-    productId: "prod_4qjJaeiFEH8K0LEo5rRftl",
-    link: "https://www.creem.io/payment/prod_4qjJaeiFEH8K0LEo5rRftl",
+    productId: "prod_6WKalf5Of9J37S0yXEqKcK",
+    link: "https://www.creem.io/payment/prod_6WKalf5Of9J37S0yXEqKcK",
     featuresEn: [
       "2000 credits",
       "All premium features",

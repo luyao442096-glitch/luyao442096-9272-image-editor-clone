@@ -40,14 +40,14 @@ export async function POST(req: NextRequest) {
       let creditsToAdd = 0;
       
       // 根据产品ID判断增加的积分
-      if (productId === "prod_6WKalf5Of9J37S0yXEqKcK") {
-        // Starter Pack
+      if (productId === "prod_4qjJaeiFEH8K0LEo5rRftl") {
+        // Starter Pack (9.9美金)
         creditsToAdd = 200;
       } else if (productId === "prod_65qZgLFUGQ1vI1mberV0pW") {
         // Professional Pack
         creditsToAdd = 800;
-      } else if (productId === "prod_4qjJaeiFEH8K0LEo5rRftl") {
-        // Studio Pack
+      } else if (productId === "prod_6WKalf5Of9J37S0yXEqKcK") {
+        // Studio Pack (69.9美金)
         creditsToAdd = 2000;
       }
       
